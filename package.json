@@ -9,11 +9,16 @@
     "lint": "next lint",
     "test": "jest --env=jsdom --verbose",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "gen-types": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "@apollo/client": "^3.6.9",
+    "@apollo/react-hooks": "^4.0.0",
     "autoprefixer": "^10.4.7",
     "axios": "^0.21.1",
+    "cross-fetch": "^3.1.5",
+    "graphql": "^16.5.0",
     "msw": "^0.35.0",
     "next": "^11.1.2",
     "postcss": "^8.4.14",
@@ -33,6 +38,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
+    "@graphql-codegen/cli": "2.6.4",
+    "@graphql-codegen/typescript": "^2.5.1",
+    "@graphql-codegen/typescript-operations": "2.4.2",
+    "@graphql-codegen/typescript-react-apollo": "3.2.16",
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-essentials": "^6.5.9",
     "@storybook/addon-interactions": "^6.5.9",
