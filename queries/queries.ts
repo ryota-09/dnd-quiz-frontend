@@ -1,21 +1,21 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const GET_WORDLIST = gql`
   query GetWordList {
     words {
-        id
-        text
-        level
+      id
+      text
+      level
     }
   }
-`
+`;
 
 export const GET_WORDLIST_LOCAL = gql`
   query GetWordList {
     words @client {
-        id
-        text
-        level
+      id
+      text
+      level
     }
   }
-`
+`;
