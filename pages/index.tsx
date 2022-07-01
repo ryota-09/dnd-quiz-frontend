@@ -12,6 +12,7 @@ import { v4 as uuid } from "uuid";
 import { GetWordListQuery } from "../types/generated/graphql";
 import { GET_WORDLIST } from "../queries/queries";
 import DraggableArea from "../components/molcules/DraggableArea";
+import Layout from "../components/organisms/Layout";
 
 export type DraggableText = {
   id: string;
@@ -64,22 +65,24 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center flex-col min-h-screen">
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="droppableId">
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {textList.map((text, index) => (
-                <div key={text.id}>
-                  <DraggableArea key={text.id} index={index} text={text} />
-                </div>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-{/* 
+    <Layout title="Home">
+      <div className="flex justify-center items-center flex-col min-h-screen">
+        <h1>ランキング</h1>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="droppableId">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {textList.map((text, index) => (
+                  <div key={text.id}>
+                    <DraggableArea key={text.id} index={index} text={text} />
+                  </div>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+        {/* 
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="droppable">
           {(provided) => (
@@ -110,7 +113,8 @@ const Home: React.FC = () => {
           )}
         </Droppable>
       </DragDropContext> */}
-    </div>
+      </div>
+    </Layout>
   );
 };
 export default Home;
