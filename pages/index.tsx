@@ -3,21 +3,42 @@ import {
   DragDropContext,
   Draggable,
   Droppable,
-  DropResult,
   resetServerContext,
 } from "react-beautiful-dnd";
-import { useState } from "react";
+import type {
+  DropResult,
+  DraggingStyle,
+  NotDraggingStyle,
+  DroppableProvided,
+  DroppableStateSnapshot,
+  DraggableProvided,
+  DraggableStateSnapshot,
+} from "react-beautiful-dnd";
+import { ReactNode, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 import { GetWordListQuery } from "../types/generated/graphql";
 import { GET_WORDLIST } from "../queries/queries";
 import DraggableArea from "../components/molcules/DraggableArea";
 import Layout from "../components/organisms/Layout";
+import { text } from "stream/consumers";
 
 export type DraggableText = {
   id: string;
   draggableId: string;
   singleText: string;
+};
+
+type SafeHydrateProps = {
+  children: ReactNode;
+};
+
+const NoSSR = ({ children }: SafeHydrateProps) => {
+  return (
+    <div suppressHydrationWarning>
+      {typeof window === "undefined" ? null : children}
+    </div>
+  );
 };
 
 const dummyArray: DraggableText[] = [
@@ -29,22 +50,22 @@ const dummyArray: DraggableText[] = [
   {
     id: uuid(),
     draggableId: uuid(),
-    singleText: "く",
-  },
-  {
-    id: uuid(),
-    draggableId: uuid(),
-    singleText: "ら",
-  },
-  {
-    id: uuid(),
-    draggableId: uuid(),
     singleText: "ん",
   },
   {
     id: uuid(),
     draggableId: uuid(),
     singleText: "ぼ",
+  },
+  {
+    id: uuid(),
+    draggableId: uuid(),
+    singleText: "く",
+  },
+  {
+    id: uuid(),
+    draggableId: uuid(),
+    singleText: "ら",
   },
 ];
 
@@ -55,66 +76,66 @@ const Home: React.FC = () => {
     console.log("エラー", error.message);
   }
 
-  const handleDragEnd = (result: DropResult) => {
-    //タスクを並び替える。
-    //ドラッグしたものを削除している。
-    const remove = textList.splice(result.source.index, 1);
-    //ドロップ先に挿入している。
-    textList.splice(result.destination.index, 0, remove[0]);
-    // resetServerContext();
+  const reorder = (
+    list: DraggableText[],
+    startIndex: number,
+    endIndex: number
+  ): DraggableText[] => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
   };
 
+  const onDragEnd = (result: DropResult) => {
+    // ドロップ先がない
+    if (!result.destination) {
+      return;
+    }
+    // 配列の順序を入れ替える
+    let movedItems = reorder(
+      textList, //　順序を入れ変えたい配列
+      result.source.index, // 元の配列の位置
+      result.destination.index // 移動先の配列の位置
+    );
+    setTextList(movedItems);
+  };
+
+  useEffect(() => {
+    let str: string = "";
+    for (const text of textList) {
+      str += text.singleText;
+    }
+    console.log(str);
+    if (str === "さくらんぼ") {
+      alert("正解");
+    }
+  }, [textList]);
+
   return (
-    <Layout title="Home">
-      <div className="flex justify-center items-center flex-col min-h-screen">
-        <h1>ランキング</h1>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="droppableId">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {textList.map((text, index) => (
-                  <div key={text.id}>
-                    <DraggableArea key={text.id} index={index} text={text} />
-                  </div>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-        {/* 
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              // style={getListStyle(snapshot.isDraggingOver)}
-            >
-              {textList.map((text, index) => (
-                <Draggable key={text.id} draggableId={text.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      // style={getItemStyle(
-                      //   snapshot.isDragging,
-                      //   provided.draggableProps.style
-                      // )}
-                    >
-                      {text.singleText}
+    <NoSSR>
+      <Layout title="Home">
+        <div className="flex justify-center items-center flex-col min-h-screen">
+          {/* {data && data.words.map((word) => <p key={word.id}>{word.text}</p>)} */}
+          <br />
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppableId">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {textList.map((text, index) => (
+                    <div key={text.id}>
+                      <DraggableArea index={index} text={text} />
                     </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext> */}
-      </div>
-    </Layout>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+      </Layout>
+    </NoSSR>
   );
 };
 export default Home;
