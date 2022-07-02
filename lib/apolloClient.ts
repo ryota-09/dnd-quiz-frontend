@@ -4,6 +4,7 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
+import fetch from "cross-fetch";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 const createApolloClient = () => {
@@ -11,6 +12,8 @@ const createApolloClient = () => {
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
       uri: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
+      // jestのエラーの解消のため
+      fetch,
     }),
     cache: new InMemoryCache(),
   });

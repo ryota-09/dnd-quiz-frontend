@@ -1,19 +1,6 @@
 import { useQuery } from "@apollo/client";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  resetServerContext,
-} from "react-beautiful-dnd";
-import type {
-  DropResult,
-  DraggingStyle,
-  NotDraggingStyle,
-  DroppableProvided,
-  DroppableStateSnapshot,
-  DraggableProvided,
-  DraggableStateSnapshot,
-} from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import type { DropResult } from "react-beautiful-dnd";
 import { ReactNode, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
@@ -21,7 +8,6 @@ import { GetWordListQuery } from "../types/generated/graphql";
 import { GET_WORDLIST } from "../queries/queries";
 import DraggableArea from "../components/molcules/DraggableArea";
 import Layout from "../components/organisms/Layout";
-import { text } from "stream/consumers";
 
 export type DraggableText = {
   id: string;
@@ -69,7 +55,7 @@ const dummyArray: DraggableText[] = [
   },
 ];
 
-const Home: React.FC = () => {
+const Quiz: React.FC = () => {
   const { data, error } = useQuery<GetWordListQuery>(GET_WORDLIST);
   const [textList, setTextList] = useState<DraggableText[]>(dummyArray);
   if (error) {
@@ -136,4 +122,4 @@ const Home: React.FC = () => {
     </NoSSR>
   );
 };
-export default Home;
+export default Quiz;

@@ -10,7 +10,7 @@ type Props = {
 const DoraggableArea: FC<Props> = ({ index, text }) => {
   return (
     <>
-      <Draggable index={index} draggableId={text.draggableId}>
+      <Draggable index={index} draggableId={text.id}>
         {(provided) => (
           <div
             key={text.id}
