@@ -15,6 +15,7 @@ export type DraggableText = {
   singleText: string;
 };
 
+// react-beautiful-dndのエラーの解消のため
 type SafeHydrateProps = {
   children: ReactNode;
 };
@@ -22,7 +23,7 @@ type SafeHydrateProps = {
 const NoSSR = ({ children }: SafeHydrateProps) => {
   return (
     <div suppressHydrationWarning>
-      {typeof window === "undefined" ? null : children}
+      {typeof window === "undefined" ? <p>ロード中...</p> : children}
     </div>
   );
 };
