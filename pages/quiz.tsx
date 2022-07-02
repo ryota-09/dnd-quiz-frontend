@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery } from "@apollo/client";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import type { DropResult } from "react-beautiful-dnd";
@@ -8,12 +9,8 @@ import { GetWordListQuery } from "../types/generated/graphql";
 import { GET_WORDLIST } from "../queries/queries";
 import DraggableArea from "../components/molcules/DraggableArea";
 import Layout from "../components/organisms/Layout";
-
-export type DraggableText = {
-  id: string;
-  draggableId: string;
-  singleText: string;
-};
+import { DraggableText, SingleQuiz } from "../types/types";
+import { makeSingleQuiz } from "../utils/functions";
 
 // react-beautiful-dndのエラーの解消のため
 type SafeHydrateProps = {
@@ -28,37 +25,12 @@ const NoSSR = ({ children }: SafeHydrateProps) => {
   );
 };
 
-const dummyArray: DraggableText[] = [
-  {
-    id: uuid(),
-    draggableId: uuid(),
-    singleText: "さ",
-  },
-  {
-    id: uuid(),
-    draggableId: uuid(),
-    singleText: "ん",
-  },
-  {
-    id: uuid(),
-    draggableId: uuid(),
-    singleText: "ぼ",
-  },
-  {
-    id: uuid(),
-    draggableId: uuid(),
-    singleText: "く",
-  },
-  {
-    id: uuid(),
-    draggableId: uuid(),
-    singleText: "ら",
-  },
-];
-
 const Quiz: React.FC = () => {
   const { data, error } = useQuery<GetWordListQuery>(GET_WORDLIST);
-  const [textList, setTextList] = useState<DraggableText[]>(dummyArray);
+  const [draggableTextList, setDraggableTextList] = useState<DraggableText[]>(
+    []
+  );
+  const [quiz, setQuiz] = useState<SingleQuiz>();
   if (error) {
     console.log("エラー", error.message);
   }
@@ -81,22 +53,32 @@ const Quiz: React.FC = () => {
     }
     // 配列の順序を入れ替える
     let movedItems = reorder(
-      textList, //　順序を入れ変えたい配列
+      draggableTextList, //　順序を入れ変えたい配列
       result.source.index, // 元の配列の位置
       result.destination.index // 移動先の配列の位置
     );
-    setTextList(movedItems);
+    setDraggableTextList(movedItems);
   };
 
   useEffect(() => {
+    if (data) {
+      let newQuiz = makeSingleQuiz(
+        data.words[Math.floor(Math.random() * data.words.length)].text
+      );
+      setQuiz(newQuiz);
+      setDraggableTextList(newQuiz.splitedText);
+    }
+  }, [data]);
+
+  useEffect(() => {
     let str: string = "";
-    for (const text of textList) {
+    for (const text of draggableTextList) {
       str += text.singleText;
     }
-    if (str === "さくらんぼ") {
+    if (data && str === quiz.answerText) {
       alert("正解");
     }
-  }, [textList]);
+  }, [draggableTextList]);
 
   return (
     <NoSSR>
@@ -104,21 +86,21 @@ const Quiz: React.FC = () => {
         <div className="flex justify-center items-center flex-col min-h-screen">
           {/* {data && data.words.map((word) => <p key={word.id}>{word.text}</p>)} */}
           <br />
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppableId">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {textList.map((text, index) => (
-                    <div key={text.id}>
-                      <DraggableArea index={index} text={text} />
-                    </div>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppableId" direction="horizontal">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="flex">
+                    {draggableTextList.map((text, index) => (
+                      <div key={text.id}>
+                        <DraggableArea index={index} text={text} />
+                      </div>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </div>
       </Layout>
     </NoSSR>
   );

@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 
-import { DraggableText } from "../types/types";
+import { DraggableText, SingleQuiz } from "../types/types";
 
 export const makeSlicedTextAray = (targetText: string): string[] => {
   let newArray: string[];
@@ -17,9 +17,11 @@ export const shuffleArray = (targetArray: string[]): string[] => {
   return copiedArray;
 };
 
-export const makeDraggableTextArray = (targetArray: string[]): DraggableText[] => {
+export const makeDraggableTextArray = (
+  targetArray: string[]
+): DraggableText[] => {
   let newObj: DraggableText;
-  let newArray: DraggableText[];
+  let newArray: DraggableText[] = [];
   for (let singleText of targetArray) {
     newObj = {
       id: uuid(),
@@ -28,4 +30,24 @@ export const makeDraggableTextArray = (targetArray: string[]): DraggableText[] =
     newArray.push(newObj);
   }
   return newArray;
+};
+
+export const makeSingleQuiz = (
+  targetText: string,
+  index?: number
+): SingleQuiz => {
+  let newQuiz: SingleQuiz = {
+    index: 0,
+    answerText: "",
+    splitedText: [],
+  };
+  let slicedTextArray = makeSlicedTextAray(targetText);
+  let shuffledArray = shuffleArray(slicedTextArray);
+  let newDraggableTextArray = makeDraggableTextArray(shuffledArray);
+  newQuiz = {
+    index: index,
+    answerText: targetText,
+    splitedText: newDraggableTextArray,
+  };
+  return newQuiz;
 };

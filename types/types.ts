@@ -9,6 +9,12 @@ export type User = {
   game_history: Game[];
 };
 
+export type SingleQuiz = {
+  index: number;
+  answerText: string;
+  splitedText: DraggableText[];
+};
+
 export type DraggableText = {
   id: string;
   singleText: string;
