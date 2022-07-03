@@ -10,7 +10,7 @@ import { GET_WORDLIST } from "../queries/queries";
 import DraggableArea from "../components/molcules/DraggableArea";
 import Layout from "../components/organisms/Layout";
 import { DraggableText, SingleQuiz } from "../types/types";
-import { makeSingleQuiz } from "../utils/functions";
+import { makeSingleQuiz, pickWords } from "../utils/functions";
 import { useGameState } from "../hooks/useGameState";
 
 // react-beautiful-dndのエラーの解消のため
@@ -65,9 +65,26 @@ const Quiz: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      
+      let pickedWords = pickWords(data.words);
+      console.log(pickedWords);
+      setGameState({
+        type: "SET_GAMESTATE",
+        payload: {
+          gameState: {
+            id: uuid(),
+            user_id: "",
+            trial_time: 0,
+            correct_count: 0,
+            vocabulary_point: 0,
+            total_point: 0,
+            created_at: new Date(),
+            current_index: 0,
+            word_list: pickedWords,
+          },
+        },
+      });
       let newQuiz = makeSingleQuiz(
-        data.words[Math.floor(Math.random() * data.words.length)].text
+        pickedWords[0].text
       );
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
@@ -90,21 +107,25 @@ const Quiz: React.FC = () => {
         <div className="flex justify-center items-center flex-col min-h-screen">
           {/* {data && data.words.map((word) => <p key={word.id}>{word.text}</p>)} */}
           <br />
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="droppableId" direction="horizontal">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="flex">
-                    {draggableTextList.map((text, index) => (
-                      <div key={text.id}>
-                        <DraggableArea index={index} text={text} />
-                      </div>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </div>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppableId" direction="horizontal">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="flex"
+                >
+                  {draggableTextList.map((text, index) => (
+                    <div key={text.id}>
+                      <DraggableArea index={index} text={text} />
+                    </div>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
       </Layout>
     </NoSSR>
   );

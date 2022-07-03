@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 
+import { GetWordListQuery } from "../types/generated/graphql";
 import { DraggableText, SingleQuiz, Word } from "../types/types";
 
 export const makeSlicedTextAray = (targetText: string): string[] => {
@@ -53,7 +54,6 @@ export const makeSingleQuiz = (
 };
 
 const randomFiveNum = (textArray: Word[]): number[] => {
-  let numArray: number[] = [];
   let num1 = 0;
   let num2 = 0;
   let num3 = 0;
@@ -83,7 +83,7 @@ const randomFiveNum = (textArray: Word[]): number[] => {
     num3 === num5 ||
     num4 === num5
   );
-  return numArray;
+  return [num1, num2, num3, num4, num5]
 };
 
 export const pickWords = (textArray: Word[]): Word[] => {
