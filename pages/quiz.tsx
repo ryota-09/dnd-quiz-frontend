@@ -11,6 +11,7 @@ import DraggableArea from "../components/molcules/DraggableArea";
 import Layout from "../components/organisms/Layout";
 import { DraggableText, SingleQuiz } from "../types/types";
 import { makeSingleQuiz } from "../utils/functions";
+import { useGameState } from "../hooks/useGameState";
 
 // react-beautiful-dndのエラーの解消のため
 type SafeHydrateProps = {
@@ -27,6 +28,8 @@ const NoSSR = ({ children }: SafeHydrateProps) => {
 
 const Quiz: React.FC = () => {
   const { data, error } = useQuery<GetWordListQuery>(GET_WORDLIST);
+  const { gameState, setGameState } = useGameState();
+
   const [draggableTextList, setDraggableTextList] = useState<DraggableText[]>(
     []
   );
@@ -62,6 +65,7 @@ const Quiz: React.FC = () => {
 
   useEffect(() => {
     if (data) {
+      
       let newQuiz = makeSingleQuiz(
         data.words[Math.floor(Math.random() * data.words.length)].text
       );
