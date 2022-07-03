@@ -38,7 +38,7 @@ const Quiz: React.FC = () => {
   const [quiz, setQuiz] = useState<SingleQuiz>();
   const [totalCount, setTotalCount] = useState(0);
   const [upTimer, setUpTimer] = useState(false);
-  const [downCount, setDownCount] = useState(5);
+  const [downCount, setDownCount] = useState(10);
   const [downTimer, setDownTimer] = useState(false);
   if (error) {
     console.log("エラー", error.message);
@@ -113,14 +113,35 @@ const Quiz: React.FC = () => {
       let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
+      setDownCount(10);
     }
   }, [draggableTextList]);
+
+  useEffect(() => {
+    if (downCount <= 0) {
+      let nextIndex = gameState.current_index + 1;
+      setGameState({
+        type: "SET_NEXT_INDEX",
+        payload: {
+          current_index: nextIndex,
+        },
+      });
+      let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
+      setQuiz(newQuiz);
+      setDraggableTextList(newQuiz.splitedText);
+      setDownCount(10);
+    }
+  }, [downCount]);
 
   return (
     <NoSSR>
       <Layout title="Home">
         <div className="flex justify-center items-center flex-col min-h-screen">
-          <CountUpTimer totalCount={totalCount} setTotalCount={setTotalCount} upTimer={upTimer} /> 
+          <CountUpTimer
+            totalCount={totalCount}
+            setTotalCount={setTotalCount}
+            upTimer={upTimer}
+          />
           <CountDownTimer
             downCount={downCount}
             setDownCount={setDownCount}

@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Dispatch, FC, memo, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, FC, memo, SetStateAction, useEffect } from "react";
 
 type Props = {
   downCount: number;
@@ -11,7 +11,7 @@ type Props = {
 const CountDownTimer: FC<Props> = memo(
   ({ downCount, setDownCount, downTimer }) => {
     const countdown = () => {
-      setDownCount((prevDownCount) => prevDownCount - 0.1);
+      setDownCount((downCount) => downCount - 0.1);
     };
 
     useEffect(() => {
@@ -21,7 +21,12 @@ const CountDownTimer: FC<Props> = memo(
       }
     }, [downTimer]);
 
-    return <div>残り時間: {downCount.toFixed(1)} s</div>;
+    return (
+      <div>
+        <p>残り時間: </p>
+        <div>{downCount.toFixed(1)} s</div>
+      </div>
+    );
   }
 );
 export default CountDownTimer;

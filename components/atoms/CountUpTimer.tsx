@@ -21,7 +21,12 @@ const CountUpTimer: FC<Props> = memo(
       }
     }, [upTimer]);
 
-    return <div>Total Time: {totalCount.toFixed(1)} s</div>;
+    return (
+      <div>
+        <p>Total Time: </p>
+        <div>{totalCount.toFixed(1)} s</div>
+      </div>
+    );
   }
 );
 export default CountUpTimer;
