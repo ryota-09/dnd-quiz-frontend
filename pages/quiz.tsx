@@ -66,7 +66,6 @@ const Quiz: React.FC = () => {
   useEffect(() => {
     if (data) {
       let pickedWords = pickWords(data.words);
-      console.log(pickedWords);
       setGameState({
         type: "SET_GAMESTATE",
         payload: {
@@ -83,9 +82,7 @@ const Quiz: React.FC = () => {
           },
         },
       });
-      let newQuiz = makeSingleQuiz(
-        pickedWords[0].text
-      );
+      let newQuiz = makeSingleQuiz(pickedWords[0].text);
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
     }
@@ -97,7 +94,19 @@ const Quiz: React.FC = () => {
       str += text.singleText;
     }
     if (data && str === quiz.answerText) {
+      let nextIndex = gameState.current_index + 1;
+      setGameState({
+        type: "SET_NEXT_INDEX",
+        payload: {
+          current_index: nextIndex,
+        },
+      });
       alert("正解");
+      let newQuiz = makeSingleQuiz(
+        gameState.word_list[nextIndex].text
+      );
+      setQuiz(newQuiz);
+      setDraggableTextList(newQuiz.splitedText);
     }
   }, [draggableTextList]);
 
@@ -105,7 +114,6 @@ const Quiz: React.FC = () => {
     <NoSSR>
       <Layout title="Home">
         <div className="flex justify-center items-center flex-col min-h-screen">
-          {/* {data && data.words.map((word) => <p key={word.id}>{word.text}</p>)} */}
           <br />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppableId" direction="horizontal">

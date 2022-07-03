@@ -1,4 +1,5 @@
-import { FC } from "react";
+/* eslint-disable react/display-name */
+import { FC, memo } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { DraggableText } from "../../types/types";
 
@@ -7,7 +8,7 @@ type Props = {
   text: DraggableText;
 };
 
-const DoraggableArea: FC<Props> = ({ index, text }) => {
+const DoraggableArea: FC<Props> = memo(({ index, text }) => {
   return (
     <>
       <Draggable index={index} draggableId={text.id}>
@@ -25,5 +26,5 @@ const DoraggableArea: FC<Props> = ({ index, text }) => {
       </Draggable>
     </>
   );
-};
+});
 export default DoraggableArea;

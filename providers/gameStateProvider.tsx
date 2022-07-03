@@ -1,8 +1,16 @@
 import { createContext, Dispatch, FC, ReactNode, useReducer } from "react";
-import { GameState } from "../types/types";
+import { GameState, Word } from "../types/types";
 
 type State = {
-  gameState: GameState;
+  id: string;
+  user_id: string;
+  trial_time: number;
+  correct_count: number;
+  vocabulary_point: number;
+  total_point: number;
+  created_at: Date;
+  current_index: number;
+  word_list: Word[];
 };
 
 type Action = {
@@ -21,29 +29,25 @@ export type GameStateContextType = {
 export const gameStateContext = createContext({} as GameStateContextType);
 
 const initialState: State = {
-  gameState: {
-    id: "",
-    user_id: "",
-    trial_time: 0,
-    correct_count: 0,
-    vocabulary_point: 0,
-    total_point: 0,
-    created_at: null,
-    current_index: 0,
-    word_list: [],
-  },
+  id: "",
+  user_id: "",
+  trial_time: 0,
+  correct_count: 0,
+  vocabulary_point: 0,
+  total_point: 0,
+  created_at: null,
+  current_index: 0,
+  word_list: [],
 };
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "SET_GAMESTATE":
-      return { gameState: action.payload.gameState };
+      return { ...action.payload.gameState };
     case "SET_NEXT_INDEX":
       return {
-        gameState: {
-          ...state.gameState,
-          current_index: action.payload.current_index,
-        },
+        ...state,
+        current_index: action.payload.current_index,
       };
     default:
       return state;
