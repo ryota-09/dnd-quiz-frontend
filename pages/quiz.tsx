@@ -14,6 +14,7 @@ import { makeSingleQuiz, pickWords } from "../utils/functions";
 import { useGameState } from "../hooks/useGameState";
 import CountUpTimer from "../components/atoms/CountUpTimer";
 import CountDownTimer from "../components/atoms/CountDownTimer";
+import CountSimpleTimer from "../components/atoms/SimpleTimer";
 
 // react-beautiful-dndのエラーの解消のため
 type SafeHydrateProps = {
@@ -40,6 +41,9 @@ const Quiz: React.FC = () => {
   const [upTimer, setUpTimer] = useState(false);
   const [downCount, setDownCount] = useState(10);
   const [downTimer, setDownTimer] = useState(false);
+  const [simpleCount, setSimpleCount] = useState(3);
+  const [simpleTimer, setSimpleTimer] = useState(false);
+
   if (error) {
     console.log("エラー", error.message);
   }
@@ -92,8 +96,7 @@ const Quiz: React.FC = () => {
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
     }
-    // setUpTimer(true);
-    // setDownTimer(true);
+    setSimpleTimer(true);
   }, [data]);
 
   useEffect(() => {
@@ -133,39 +136,57 @@ const Quiz: React.FC = () => {
     }
   }, [downCount]);
 
+  useEffect(() => {
+    if (simpleCount === 0) {
+      setSimpleTimer(false);
+      setUpTimer(true);
+      setDownTimer(true);
+    }
+  }, [simpleCount]);
+
   return (
     <NoSSR>
       <Layout title="Home">
         <div className="flex justify-center items-center flex-col min-h-screen">
-          <CountUpTimer
-            totalCount={totalCount}
-            setTotalCount={setTotalCount}
-            upTimer={upTimer}
-          />
-          <CountDownTimer
-            downCount={downCount}
-            setDownCount={setDownCount}
-            downTimer={downTimer}
-          />
-          <br />
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppableId" direction="horizontal">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="flex"
-                >
-                  {draggableTextList.map((text, index) => (
-                    <div key={text.id}>
-                      <DraggableArea index={index} text={text} />
+          {simpleTimer ? (
+            <CountSimpleTimer
+              simpleCount={simpleCount}
+              setSimpleCount={setSimpleCount}
+              simpleTimer={simpleTimer}
+            />
+          ) : (
+            <>
+              <CountUpTimer
+                totalCount={totalCount}
+                setTotalCount={setTotalCount}
+                upTimer={upTimer}
+              />
+              <CountDownTimer
+                downCount={downCount}
+                setDownCount={setDownCount}
+                downTimer={downTimer}
+              />
+              <br />
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="droppableId" direction="horizontal">
+                  {(provided) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className="flex"
+                    >
+                      {draggableTextList.map((text, index) => (
+                        <div key={text.id}>
+                          <DraggableArea index={index} text={text} />
+                        </div>
+                      ))}
+                      {provided.placeholder}
                     </div>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </>
+          )}
         </div>
       </Layout>
     </NoSSR>

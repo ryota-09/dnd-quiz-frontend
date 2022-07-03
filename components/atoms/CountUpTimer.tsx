@@ -11,12 +11,12 @@ type Props = {
 const CountUpTimer: FC<Props> = memo(
   ({ totalCount, setTotalCount, upTimer }) => {
     const countup = () => {
-      setTotalCount((totalCount) => totalCount + 0.1);
+      setTotalCount((totalCount) => totalCount + 1);
     };
 
     useEffect(() => {
       if (upTimer) {
-        const timerId = setInterval(countup, 100);
+        const timerId = setInterval(countup, 1000);
         return () => clearInterval(timerId);
       }
     }, [upTimer]);
@@ -24,7 +24,7 @@ const CountUpTimer: FC<Props> = memo(
     return (
       <div>
         <p>Total Time: </p>
-        <div>{totalCount.toFixed(1)} s</div>
+        <div>{totalCount} s</div>
       </div>
     );
   }
