@@ -14,7 +14,7 @@ const DoraggableArea: FC<Props> = ({ index, text }) => {
         {(provided) => (
           <div
             key={text.id}
-            className="border border-green-500 px-10 py-10 text-5xl"
+            className="border bg-green-300 px-10 py-10 text-7xl rounded-md"
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}

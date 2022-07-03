@@ -32,15 +32,15 @@ const Layout: FC<TubTitle> = ({ title, children }) => {
                 <Link href="/">
                   <a
                     data-testid="home-nav"
-                    className="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+                    className="text-gray-600 hover:text-green-300 active:text-green-700 text-lg font-semibold transition duration-100"
                   >
-                    ランキング
+                    ホーム
                   </a>
                 </Link>
                 <Link href="/login">
                   <a
                     data-testid="login-nav"
-                    className="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+                    className="text-gray-600 hover:text-green-300 active:text-green-700 text-lg font-semibold transition duration-100"
                   >
                     ログイン
                   </a>
@@ -48,7 +48,7 @@ const Layout: FC<TubTitle> = ({ title, children }) => {
                 <Link href="/mypage">
                   <a
                     data-testid="mypage-nav"
-                    className="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+                    className="text-gray-600 hover:text-green-300 active:text-green-700 text-lg font-semibold transition duration-100"
                   >
                     マイページ
                   </a>
@@ -58,7 +58,7 @@ const Layout: FC<TubTitle> = ({ title, children }) => {
                 <Link href="/">
                   <a
                     data-testid="search-nav"
-                    className="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+                    className="text-gray-600 hover:text-green-500 active:text-green-700 text-lg font-semibold transition duration-100"
                   >
                     ランキング
                   </a>

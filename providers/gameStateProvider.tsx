@@ -6,9 +6,10 @@ type State = {
 };
 
 type Action = {
-  type: "SET_GAMESTATE";
+  type: "SET_GAMESTATE" | "SET_NEXT_INDEX";
   payload: {
     gameState?: GameState;
+    current_index?: number;
   };
 };
 
@@ -37,6 +38,13 @@ const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "SET_GAMESTATE":
       return { gameState: action.payload.gameState };
+    case "SET_NEXT_INDEX":
+      return {
+        gameState: {
+          ...state.gameState,
+          current_index: action.payload.current_index,
+        },
+      };
     default:
       return state;
   }
