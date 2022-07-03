@@ -12,6 +12,8 @@ import Layout from "../components/organisms/Layout";
 import { DraggableText, SingleQuiz } from "../types/types";
 import { makeSingleQuiz, pickWords } from "../utils/functions";
 import { useGameState } from "../hooks/useGameState";
+import CountUpTimer from "../components/atoms/CountUpTimer";
+import CountDownTimer from "../components/atoms/CountDownTimer";
 
 // react-beautiful-dndのエラーの解消のため
 type SafeHydrateProps = {
@@ -34,6 +36,10 @@ const Quiz: React.FC = () => {
     []
   );
   const [quiz, setQuiz] = useState<SingleQuiz>();
+  const [totalCount, setTotalCount] = useState(0);
+  const [upTimer, setUpTimer] = useState(false);
+  const [downCount, setDownCount] = useState(5);
+  const [downTimer, setDownTimer] = useState(false);
   if (error) {
     console.log("エラー", error.message);
   }
@@ -86,6 +92,8 @@ const Quiz: React.FC = () => {
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
     }
+    // setUpTimer(true);
+    // setDownTimer(true);
   }, [data]);
 
   useEffect(() => {
@@ -102,9 +110,7 @@ const Quiz: React.FC = () => {
         },
       });
       alert("正解");
-      let newQuiz = makeSingleQuiz(
-        gameState.word_list[nextIndex].text
-      );
+      let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
     }
@@ -114,6 +120,12 @@ const Quiz: React.FC = () => {
     <NoSSR>
       <Layout title="Home">
         <div className="flex justify-center items-center flex-col min-h-screen">
+          <CountUpTimer totalCount={totalCount} setTotalCount={setTotalCount} upTimer={upTimer} /> 
+          <CountDownTimer
+            downCount={downCount}
+            setDownCount={setDownCount}
+            downTimer={downTimer}
+          />
           <br />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppableId" direction="horizontal">
