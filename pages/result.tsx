@@ -97,7 +97,7 @@ const Result: NextPage = () => {
         </button>
             </div>
           ) : (
-            ""
+            <p>結果が表示されます</p>
           )}
         </div>
       </Layout>

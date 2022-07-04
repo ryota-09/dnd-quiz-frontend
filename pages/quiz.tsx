@@ -112,7 +112,7 @@ const Quiz: NextPage = () => {
     for (const text of draggableTextList) {
       str += text.singleText;
     }
-    if (data && str === quiz.answerText) {
+    if (data && quiz && str === quiz.answerText) {
       setDisplayText(" 正解 ");
       let nextCorrectCount = gameState.correct_count + 1;
       setGameState({
@@ -121,7 +121,7 @@ const Quiz: NextPage = () => {
           correct_count: nextCorrectCount,
         },
       });
-      let nextVocaPoint = calcTotalVocabularyPoint(gameState.current_index)
+      let nextVocaPoint = calcTotalVocabularyPoint(gameState.current_index);
       setGameState({
         type: "ADD_BOCABULARY_POINT",
         payload: {
