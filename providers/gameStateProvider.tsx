@@ -14,10 +14,11 @@ type State = {
 };
 
 type Action = {
-  type: "SET_GAMESTATE" | "SET_NEXT_INDEX";
+  type: "SET_GAMESTATE" | "SET_NEXT_INDEX" | "SET_CORRECT_COUNT";
   payload: {
     gameState?: GameState;
     current_index?: number;
+    correct_count?: number;
   };
 };
 
@@ -49,6 +50,11 @@ const reducer = (state: State, action: Action) => {
         ...state,
         current_index: action.payload.current_index,
       };
+      case "SET_CORRECT_COUNT":
+        return {
+          ...state,
+          correct_count : action.payload.correct_count,
+        };
     default:
       return state;
   }
