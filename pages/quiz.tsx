@@ -4,6 +4,8 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import type { DropResult } from "react-beautiful-dnd";
 import { ReactNode, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
 
 import { GetWordListQuery } from "../types/generated/graphql";
 import { GET_WORDLIST } from "../queries/queries";
@@ -29,14 +31,16 @@ const NoSSR = ({ children }: SafeHydrateProps) => {
   );
 };
 
-const Quiz: React.FC = () => {
+const Quiz: NextPage = () => {
   const { data, error } = useQuery<GetWordListQuery>(GET_WORDLIST);
   const { gameState, setGameState } = useGameState();
+  const router = useRouter();
 
   const [draggableTextList, setDraggableTextList] = useState<DraggableText[]>(
     []
   );
   const [quiz, setQuiz] = useState<SingleQuiz>();
+  const [displayText, setDisplayText] = useState("");
   const [totalCount, setTotalCount] = useState(0);
   const [upTimer, setUpTimer] = useState(false);
   const [downCount, setDownCount] = useState(10);
@@ -112,27 +116,45 @@ const Quiz: React.FC = () => {
           current_index: nextIndex,
         },
       });
-      alert("正解");
-      let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
-      setQuiz(newQuiz);
-      setDraggableTextList(newQuiz.splitedText);
-      setDownCount(10);
+      setDisplayText(" 正解 ");
+      try {
+        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
+        setQuiz(newQuiz);
+        setDraggableTextList(newQuiz.splitedText);
+        setDownCount(10);
+        setTimeout(() => {
+          setDisplayText("");
+        }, 1000);
+      } catch {
+        router.push("result");
+      }
     }
   }, [draggableTextList]);
 
   useEffect(() => {
     if (downCount <= 0) {
+      setDisplayText(" 時間切れ !");
       let nextIndex = gameState.current_index + 1;
+      if (nextIndex === 5) {
+        router.push("/result");
+      }
       setGameState({
         type: "SET_NEXT_INDEX",
         payload: {
           current_index: nextIndex,
         },
       });
-      let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
-      setQuiz(newQuiz);
-      setDraggableTextList(newQuiz.splitedText);
-      setDownCount(10);
+      try {
+        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
+        setQuiz(newQuiz);
+        setDraggableTextList(newQuiz.splitedText);
+        setDownCount(10);
+        setTimeout(() => {
+          setDisplayText("");
+        }, 1000);
+      } catch {
+        router.push("/result");
+      }
     }
   }, [downCount]);
 
@@ -185,6 +207,8 @@ const Quiz: React.FC = () => {
                   )}
                 </Droppable>
               </DragDropContext>
+              <br />
+              <p className="z-50 text-red-500">{displayText}</p>
             </>
           )}
         </div>
