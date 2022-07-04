@@ -21,7 +21,7 @@ export const GET_WORDLIST = gql`
 // `;
 
 export const CREATE_WORD = gql`
-  mutation CreateWord($text: String!, $level: Number!) {
+  mutation CreateWord($text: String!, $level: Float!) {
     createWord(word: { text: $text, level: $level }) {
       id
       text
