@@ -77,6 +77,10 @@ const Quiz: NextPage = () => {
     setDraggableTextList(movedItems);
   };
 
+  const calcTotalVocabularyPoint = (index: number): number => {
+    return gameState.vocabulary_point + gameState.word_list[index].level;
+  };
+
   useEffect(() => {
     if (data) {
       let pickedWords = pickWords(data.words);
@@ -109,14 +113,30 @@ const Quiz: NextPage = () => {
       str += text.singleText;
     }
     if (data && str === quiz.answerText) {
+      setDisplayText(" 正解 ");
+      let nextCorrectCount = gameState.correct_count + 1;
+      setGameState({
+        type: "SET_CORRECT_COUNT",
+        payload: {
+          correct_count: nextCorrectCount,
+        },
+      });
+      let nextVocaPoint = calcTotalVocabularyPoint(gameState.current_index)
+      setGameState({
+        type: "ADD_BOCABULARY_POINT",
+        payload: {
+          vocabulary_point: nextVocaPoint,
+        },
+      });
       let nextIndex = gameState.current_index + 1;
+      console.log(nextIndex);
       setGameState({
         type: "SET_NEXT_INDEX",
         payload: {
           current_index: nextIndex,
         },
       });
-      setDisplayText(" 正解 ");
+
       try {
         let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
         setQuiz(newQuiz);
@@ -126,7 +146,23 @@ const Quiz: NextPage = () => {
           setDisplayText("");
         }, 1000);
       } catch {
-        router.push("result");
+        setGameState({
+          type: "SET_GAMESTATE",
+          payload: {
+            gameState: {
+              id: gameState.id,
+              user_id: "ユーザーid",
+              trial_time: totalCount,
+              correct_count: nextCorrectCount,
+              vocabulary_point: nextVocaPoint,
+              total_point: 0,
+              created_at: gameState.created_at,
+              current_index: nextIndex,
+              word_list: gameState.word_list,
+            },
+          },
+        });
+        router.push("/result");
       }
     }
   }, [draggableTextList]);
@@ -135,9 +171,6 @@ const Quiz: NextPage = () => {
     if (downCount <= 0) {
       setDisplayText(" 時間切れ !");
       let nextIndex = gameState.current_index + 1;
-      if (nextIndex === 5) {
-        router.push("/result");
-      }
       setGameState({
         type: "SET_NEXT_INDEX",
         payload: {
@@ -153,6 +186,22 @@ const Quiz: NextPage = () => {
           setDisplayText("");
         }, 1000);
       } catch {
+        setGameState({
+          type: "SET_GAMESTATE",
+          payload: {
+            gameState: {
+              id: gameState.id,
+              user_id: "ユーザーid",
+              trial_time: totalCount,
+              correct_count: gameState.correct_count,
+              vocabulary_point: gameState.vocabulary_point,
+              total_point: 0,
+              created_at: gameState.created_at,
+              current_index: nextIndex,
+              word_list: gameState.word_list,
+            },
+          },
+        });
         router.push("/result");
       }
     }
