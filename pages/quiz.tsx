@@ -209,7 +209,7 @@ const Quiz: NextPage = () => {
               created_at: gameState.created_at,
               current_index: nextIndex,
               word_list: gameState.word_list,
-              correct_list: [],
+              correct_list: [...gameState.correct_list],
             },
           },
         });

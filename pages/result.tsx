@@ -6,13 +6,13 @@ import { useEffect, useState } from "react";
 import Layout from "../components/organisms/Layout";
 import { useGameState } from "../hooks/useGameState";
 import ResultRadarChart from "../components/organisms/ResultRadarChart";
-import { WordState } from "../types/types";
+import { useDisplayList } from "../hooks/useDisplayList";
 
 const Result: NextPage = () => {
   const { gameState, setGameState } = useGameState();
+  const { resultWordList, makeDisplayList } = useDisplayList();
 
   const [isOpen, setIsOpen] = useState(false);
-  
 
   const router = useRouter();
 
@@ -47,6 +47,7 @@ const Result: NextPage = () => {
   };
 
   useEffect(() => {
+    makeDisplayList(gameState.word_list, gameState.correct_list);
     setGameState({
       type: "SET_GAMESTATE",
       payload: {
@@ -64,7 +65,7 @@ const Result: NextPage = () => {
           created_at: gameState.created_at,
           current_index: gameState.current_index,
           word_list: gameState.word_list,
-          correct_list: gameState.correct_list
+          correct_list: gameState.correct_list,
         },
       },
     });
@@ -100,6 +101,14 @@ const Result: NextPage = () => {
                 >
                   リトライ
                 </button>
+                {resultWordList.map((word, index) => (
+                  <div key={index}>
+                    <span>
+                      {index + 1}: {word.word.text} 結果:
+                      {word.isCorrect ? "⭕️" : "❌"}
+                    </span>
+                  </div>
+                ))}
               </div>
               <div>
                 <ResultRadarChart

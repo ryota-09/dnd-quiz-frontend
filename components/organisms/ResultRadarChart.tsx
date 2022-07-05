@@ -39,11 +39,14 @@ type Props = {
 };
 
 export default class ResultRadarChart extends PureComponent<Props> {
-  props: Props = {
-    trialTime: this.props.trialTime,
-    correctCount: this.props.correctCount,
-    vocabularyPoint: this.props.vocabularyPoint,
-  };
+  constructor(props) {
+    super(props);
+    props = {
+      trialTime: this.props.trialTime,
+      correctCount: this.props.correctCount,
+      vocabularyPoint: this.props.vocabularyPoint,
+    };
+  }
 
   render() {
     let data = [

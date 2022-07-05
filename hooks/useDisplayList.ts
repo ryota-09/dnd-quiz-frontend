@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from "react";
 import { WordState } from "../types/types";
 
-const useDisplayList = () => {
+export const useDisplayList = () => {
   const [resultWordList, setResultWordList] = useState<WordState[]>([]);
   const makeDisplayList = useCallback(
     (originList: WordState[], correctList: WordState[]) => {
@@ -10,19 +11,19 @@ const useDisplayList = () => {
       for (const originOne of originList) {
         frag = false;
         for (const correctOne of correctList) {
-          if (originOne === correctOne) {
+          if (originOne.word.text === correctOne.word.text) {
             targetList.push(correctOne);
             frag = true;
+            console.log("ifの中", targetList);
           }
         }
         if (!frag) {
           targetList.push(originOne);
         }
       }
-      console.log(targetList);
       setResultWordList([...targetList]);
     },
-    [resultWordList]
+    []
   );
   return { resultWordList, makeDisplayList };
 };
