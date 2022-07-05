@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 import Layout from "../components/organisms/Layout";
 import { useGameState } from "../hooks/useGameState";
 import ResultRadarChart from "../components/organisms/ResultRadarChart";
+import { WordState } from "../types/types";
 
 const Result: NextPage = () => {
   const { gameState, setGameState } = useGameState();
 
   const [isOpen, setIsOpen] = useState(false);
+  
 
   const router = useRouter();
 
