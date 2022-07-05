@@ -36,6 +36,11 @@ export type Word = {
   level: number;
 };
 
+export type WordState = {
+  isCorrect: boolean;
+  word: Word;
+};
+
 export type GameState = {
   id: string;
   user_id: string;
@@ -45,5 +50,5 @@ export type GameState = {
   total_point: number;
   created_at: Date;
   current_index: number;
-  word_list: Word[];
+  word_list: WordState[];
 };

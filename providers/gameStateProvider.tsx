@@ -1,5 +1,5 @@
 import { createContext, Dispatch, FC, ReactNode, useReducer } from "react";
-import { GameState, Word } from "../types/types";
+import { GameState, WordState } from "../types/types";
 
 type State = {
   id: string;
@@ -10,7 +10,7 @@ type State = {
   total_point: number;
   created_at: Date;
   current_index: number;
-  word_list: Word[];
+  word_list: WordState[];
 };
 
 type Action = {

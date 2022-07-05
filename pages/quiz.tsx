@@ -78,7 +78,7 @@ const Quiz: NextPage = () => {
   };
 
   const calcTotalVocabularyPoint = (index: number): number => {
-    return gameState.vocabulary_point + gameState.word_list[index].level;
+    return gameState.vocabulary_point + gameState.word_list[index].word.level;
   };
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const Quiz: NextPage = () => {
           },
         },
       });
-      let newQuiz = makeSingleQuiz(pickedWords[0].text);
+      let newQuiz = makeSingleQuiz(pickedWords[0].word.text);
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
     }
@@ -138,7 +138,7 @@ const Quiz: NextPage = () => {
       });
 
       try {
-        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
+        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].word.text);
         setQuiz(newQuiz);
         setDraggableTextList(newQuiz.splitedText);
         setDownCount(10);
@@ -178,7 +178,7 @@ const Quiz: NextPage = () => {
         },
       });
       try {
-        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].text);
+        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].word.text);
         setQuiz(newQuiz);
         setDraggableTextList(newQuiz.splitedText);
         setDownCount(10);

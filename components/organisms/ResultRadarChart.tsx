@@ -52,7 +52,7 @@ export default class ResultRadarChart extends PureComponent<Props> {
         A: calcTrialPoint(this.props.trialTime),
         fullMark: 100,
       },
-      { subject: "ボキャpt", A: this.props.vocabularyPoint * 2, fullMark: 100 },
+      { subject: "語い力", A: this.props.vocabularyPoint * 2, fullMark: 100 },
       {
         subject: "正確性",
         A: calcCorrectPoint(this.props.correctCount),
