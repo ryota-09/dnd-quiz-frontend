@@ -11,6 +11,7 @@ type State = {
   created_at: Date;
   current_index: number;
   word_list: WordState[];
+  correct_list: WordState[];
 };
 
 type Action = {
@@ -18,12 +19,14 @@ type Action = {
     | "SET_GAMESTATE"
     | "SET_NEXT_INDEX"
     | "SET_CORRECT_COUNT"
-    | "ADD_BOCABULARY_POINT";
+    | "ADD_BOCABULARY_POINT"
+    | "ADD_CORRECT_LIST";
   payload: {
     gameState?: GameState;
     current_index?: number;
     correct_count?: number;
     vocabulary_point?: number;
+    wordState?: WordState;
   };
 };
 
@@ -44,6 +47,7 @@ const initialState: State = {
   created_at: null,
   current_index: 0,
   word_list: [],
+  correct_list: [],
 };
 
 const reducer = (state: State, action: Action) => {
@@ -64,6 +68,14 @@ const reducer = (state: State, action: Action) => {
       return {
         ...state,
         vocabulary_point: action.payload.vocabulary_point,
+      };
+    case "ADD_CORRECT_LIST":
+      return {
+        ...state,
+        correct_list: [
+          ...state.correct_list,
+          { isCorrect: true, word: action.payload.wordState.word },
+        ],
       };
     default:
       return state;

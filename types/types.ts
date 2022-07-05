@@ -51,4 +51,5 @@ export type GameState = {
   created_at: Date;
   current_index: number;
   word_list: WordState[];
+  correct_list: WordState[];
 };

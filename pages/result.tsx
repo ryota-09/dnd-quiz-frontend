@@ -35,9 +35,9 @@ const Result: NextPage = () => {
     if (correctCount === 5) {
       correctPoint = 100;
     } else if (correctCount >= 3 && correctCount <= 4) {
-      correctPoint = correctCount * 10;
+      correctPoint = correctCount * 20;
     } else {
-      correctPoint = correctCount * 10;
+      correctPoint = correctCount * 20;
     }
     // vocaPoint
     vocaPoint = vocabularyPoint * 2;
@@ -62,6 +62,7 @@ const Result: NextPage = () => {
           created_at: gameState.created_at,
           current_index: gameState.current_index,
           word_list: gameState.word_list,
+          correct_list: gameState.correct_list
         },
       },
     });

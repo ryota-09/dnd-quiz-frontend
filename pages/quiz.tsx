@@ -97,6 +97,7 @@ const Quiz: NextPage = () => {
             created_at: new Date(),
             current_index: 0,
             word_list: pickedWords,
+            correct_list: [],
           },
         },
       });
@@ -114,6 +115,13 @@ const Quiz: NextPage = () => {
     }
     if (data && quiz && str === quiz.answerText) {
       setDisplayText(" 正解 ");
+      let targetWordState = gameState.word_list[gameState.current_index];
+      setGameState({
+        type: "ADD_CORRECT_LIST",
+        payload: {
+          wordState: targetWordState,
+        },
+      });
       let nextCorrectCount = gameState.correct_count + 1;
       setGameState({
         type: "SET_CORRECT_COUNT",
@@ -129,14 +137,12 @@ const Quiz: NextPage = () => {
         },
       });
       let nextIndex = gameState.current_index + 1;
-      console.log(nextIndex);
       setGameState({
         type: "SET_NEXT_INDEX",
         payload: {
           current_index: nextIndex,
         },
       });
-
       try {
         let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].word.text);
         setQuiz(newQuiz);
@@ -159,6 +165,10 @@ const Quiz: NextPage = () => {
               created_at: gameState.created_at,
               current_index: nextIndex,
               word_list: gameState.word_list,
+              correct_list: [
+                ...gameState.correct_list,
+                { isCorrect: true, word: targetWordState.word },
+              ],
             },
           },
         });
@@ -199,6 +209,7 @@ const Quiz: NextPage = () => {
               created_at: gameState.created_at,
               current_index: nextIndex,
               word_list: gameState.word_list,
+              correct_list: [],
             },
           },
         });

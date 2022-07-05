@@ -13,7 +13,7 @@ const calcTrialPoint = (trialTime: number) => {
   if (trialTime < 20) {
     timePoint = trialTime + 80;
   } else if (trialTime >= 20 && trialTime < 40) {
-    timePoint = trialTime + 50;
+    timePoint = trialTime + 40;
   } else {
     timePoint = 10;
   }
@@ -25,9 +25,9 @@ const calcCorrectPoint = (correctCount: number) => {
   if (correctCount === 5) {
     correctPoint = 100;
   } else if (correctCount >= 3 && correctCount <= 4) {
-    correctPoint = correctCount * 10;
+    correctPoint = correctCount * 20;
   } else {
-    correctPoint = correctCount * 10;
+    correctPoint = correctCount * 20;
   }
   return correctPoint;
 };
