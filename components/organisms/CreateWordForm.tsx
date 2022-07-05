@@ -14,12 +14,12 @@ const CreateWordForm = () => {
   return (
     <>
       <section>
-        <div className="flex flex-col justify-center min- py-12 sm:px-6 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            <h2 className="mt-6 text-3xl font-extrabold text-center text-neutral-600">
+        <div className="flex flex-col justify-center sm:px-6 lg:px-8">
+          {/* <div className="sm:mx-auto sm:w-full sm:max-w-md">
+            <p className="mt-6 text-3xl font-extrabold text-center text-neutral-600">
               問題作成
-            </h2>
-          </div>
+            </p>
+          </div> */}
 
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div className="px-4 py-8 sm:px-10">
@@ -68,14 +68,12 @@ const CreateWordForm = () => {
                   <button
                     type="submit"
                     disabled={!text || !level}
-                    className="flex items-center justify-center w-full px-10 py-4 text-base font-medium text-center text-white transition duration-500 ease-in-out transform bg-blue-400 rounded-xl hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="flex items-center justify-center w-full px-10 py-4 text-base font-medium text-center text-white transition duration-500 ease-in-out transform bg-green-400 rounded-xl hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    投稿
+                    問題作成
                   </button>
                 </div>
               </form>
-              {text}
-              {level}
               {textFormError && (
                 <p className="mt-5 text-red-600">{textFormError}</p>
               )}

@@ -30,6 +30,8 @@ export const useCreateWordForm = () => {
           level: Number(level),
         },
       });
+      setText("");
+      setLevel("");
     } catch (error) {
       setTextFormError("【Error】" + error);
     }
