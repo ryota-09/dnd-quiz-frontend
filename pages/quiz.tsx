@@ -18,7 +18,6 @@ import {
   WordState,
 } from "../types/types";
 import { makeSingleQuiz, pickWords } from "../utils/functions";
-import { useGameState } from "../hooks/useGameState";
 import CountUpTimer from "../components/atoms/CountUpTimer";
 import CountDownTimer from "../components/atoms/CountDownTimer";
 import CountSimpleTimer from "../components/atoms/SimpleTimer";
@@ -51,7 +50,6 @@ const Quiz: NextPage = () => {
     dbWordList([...data.words]);
   }
   const currentGameState = useReactiveVar(gameStateVar);
-  // const { gameState, setGameState } = useGameState();
   const router = useRouter();
 
   const [draggableTextList, setDraggableTextList] = useState<DraggableText[]>(
@@ -142,38 +140,14 @@ const Quiz: NextPage = () => {
         targetWordState,
       ];
       addCorrectList(targetWordStateList as WordState[]);
-      // setGameState({
-      //   type: "ADD_CORRECT_LIST",
-      //   payload: {
-      //     wordState: targetWordState,
-      //   },
-      // });
       let nextCorrectCount = currentGameState.correct_count + 1;
       setCorrectCount(nextCorrectCount);
-      // setGameState({
-      //   type: "SET_CORRECT_COUNT",
-      //   payload: {
-      //     correct_count: nextCorrectCount,
-      //   },
-      // });
       let nextVocaPoint = calcTotalVocabularyPoint(
         currentGameState.current_index
       );
       addBocabularyPoint(nextVocaPoint);
-      // setGameState({
-      //   type: "ADD_BOCABULARY_POINT",
-      //   payload: {
-      //     vocabulary_point: nextVocaPoint,
-      //   },
-      // });
       let nextIndex = currentGameState.current_index + 1;
       setNextIndex(nextIndex);
-      // setGameState({
-      //   type: "SET_NEXT_INDEX",
-      //   payload: {
-      //     current_index: nextIndex,
-      //   },
-      // });
       try {
         let newQuiz = makeSingleQuiz(
           currentGameState.word_list[nextIndex].word.text
@@ -198,26 +172,6 @@ const Quiz: NextPage = () => {
           correct_list: [...currentGameState.correct_list, targetWordState],
         };
         setGameState(finishGameState as GameState);
-        // setGameState({
-        //   type: "SET_GAMESTATE",
-        //   payload: {
-        //     gameState: {
-        //       id: currentGameState.id,
-        //       user_id: "ユーザーid",
-        //       trial_time: totalCount,
-        //       correct_count: nextCorrectCount,
-        //       vocabulary_point: nextVocaPoint,
-        //       total_point: 0,
-        //       created_at: currentGameState.created_at,
-        //       current_index: nextIndex,
-        //       word_list: currentGameState.word_list,
-        //       correct_list: [
-        //         ...currentGameState.correct_list,
-        //         { isCorrect: true, word: targetWordState.word },
-        //       ],
-        //     },
-        //   },
-        // });
         router.push("/result");
       }
     }
@@ -228,12 +182,6 @@ const Quiz: NextPage = () => {
       setDisplayText(" 時間切れ !");
       let nextIndex = currentGameState.current_index + 1;
       setNextIndex(nextIndex);
-      // setGameState({
-      //   type: "SET_NEXT_INDEX",
-      //   payload: {
-      //     current_index: nextIndex,
-      //   },
-      // });
       try {
         let newQuiz = makeSingleQuiz(
           currentGameState.word_list[nextIndex].word.text
@@ -258,23 +206,6 @@ const Quiz: NextPage = () => {
           correct_list: [...currentGameState.correct_list],
         };
         setGameState(finishGameState);
-        // setGameState({
-        //   type: "SET_GAMESTATE",
-        //   payload: {
-        //     gameState: {
-        //       id: currentGameState.id,
-        //       user_id: "ユーザーid",
-        //       trial_time: totalCount,
-        //       correct_count: currentGameState.correct_count,
-        //       vocabulary_point: currentGameState.vocabulary_point,
-        //       total_point: 0,
-        //       created_at: currentGameState.created_at,
-        //       current_index: nextIndex,
-        //       word_list: currentGameState.word_list,
-        //       correct_list: [...currentGameState.correct_list],
-        //     },
-        //   },
-        // });
         router.push("/result");
       }
     }

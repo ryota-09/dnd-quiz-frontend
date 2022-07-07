@@ -4,14 +4,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import Layout from "../components/organisms/Layout";
-import { useGameState } from "../hooks/useGameState";
 import ResultRadarChart from "../components/organisms/ResultRadarChart";
 import { useDisplayList } from "../hooks/useDisplayList";
 import { useReactiveVar } from "@apollo/client";
 import { gameStateVar, setGameState } from "../cache";
 
 const Result: NextPage = () => {
-  // const { gameState, setGameState } = useGameState();
   const { resultWordList, makeDisplayList } = useDisplayList();
   const currentGameState = useReactiveVar(gameStateVar);
   const [isOpen, setIsOpen] = useState(false);
@@ -67,28 +65,6 @@ const Result: NextPage = () => {
       correct_list: currentGameState.correct_list,
     };
     setGameState(resultGameState);
-    console.log(currentGameState);
-    // setGameState({
-    //   type: "SET_GAMESTATE",
-    //   payload: {
-    //     gameState: {
-    //       id: currentGameState.id,
-    //       user_id: "ユーザーid",
-    //       trial_time: currentGameState.trial_time,
-    //       correct_count: currentGameState.correct_count,
-    //       vocabulary_point: currentGameState.vocabulary_point,
-    //       total_point: calcTotalPoint(
-    //         currentGameState.trial_time,
-    //         currentGameState.correct_count,
-    //         currentGameState.vocabulary_point
-    //       ),
-    //       created_at: currentGameState.created_at,
-    //       current_index: currentGameState.current_index,
-    //       word_list: currentGameState.word_list,
-    //       correct_list: currentGameState.correct_list,
-    //     },
-    //   },
-    // });
   }, []);
   return (
     <>
