@@ -11,7 +11,7 @@ export const useDisplayList = () => {
       for (const originOne of originList) {
         frag = false;
         for (const correctOne of correctList) {
-          if (originOne.word.text === correctOne.word.text) {
+          if (originOne.word.id === correctOne.word.id) {
             targetList.push(correctOne);
             frag = true;
           }

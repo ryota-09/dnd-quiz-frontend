@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useQuery } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import type { DropResult } from "react-beautiful-dnd";
 import { ReactNode, useEffect, useState } from "react";
@@ -11,12 +11,26 @@ import { GetWordListQuery } from "../types/generated/graphql";
 import { GET_WORDLIST } from "../queries/queries";
 import DraggableArea from "../components/molcules/DraggableArea";
 import Layout from "../components/organisms/Layout";
-import { DraggableText, SingleQuiz } from "../types/types";
+import {
+  DraggableText,
+  GameState,
+  SingleQuiz,
+  WordState,
+} from "../types/types";
 import { makeSingleQuiz, pickWords } from "../utils/functions";
 import { useGameState } from "../hooks/useGameState";
 import CountUpTimer from "../components/atoms/CountUpTimer";
 import CountDownTimer from "../components/atoms/CountDownTimer";
 import CountSimpleTimer from "../components/atoms/SimpleTimer";
+import {
+  dbWordList,
+  setGameState,
+  setNextIndex,
+  setCorrectCount,
+  addCorrectList,
+  addBocabularyPoint,
+  gameStateVar,
+} from "../cache";
 
 // react-beautiful-dndのエラーの解消のため
 type SafeHydrateProps = {
@@ -33,7 +47,11 @@ const NoSSR = ({ children }: SafeHydrateProps) => {
 
 const Quiz: NextPage = () => {
   const { data, error } = useQuery<GetWordListQuery>(GET_WORDLIST);
-  const { gameState, setGameState } = useGameState();
+  if (data) {
+    dbWordList([...data.words]);
+  }
+  const currentGameState = useReactiveVar(gameStateVar);
+  // const { gameState, setGameState } = useGameState();
   const router = useRouter();
 
   const [draggableTextList, setDraggableTextList] = useState<DraggableText[]>(
@@ -78,29 +96,29 @@ const Quiz: NextPage = () => {
   };
 
   const calcTotalVocabularyPoint = (index: number): number => {
-    return gameState.vocabulary_point + gameState.word_list[index].word.level;
+    return (
+      currentGameState.vocabulary_point +
+      currentGameState.word_list[index].word.level
+    );
   };
 
   useEffect(() => {
     if (data) {
       let pickedWords = pickWords(data.words);
-      setGameState({
-        type: "SET_GAMESTATE",
-        payload: {
-          gameState: {
-            id: uuid(),
-            user_id: "",
-            trial_time: 0,
-            correct_count: 0,
-            vocabulary_point: 0,
-            total_point: 0,
-            created_at: new Date(),
-            current_index: 0,
-            word_list: pickedWords,
-            correct_list: [],
-          },
-        },
-      });
+      let initGameState = {
+        id: uuid(),
+        user_id: "",
+        trial_time: 0,
+        correct_count: 0,
+        vocabulary_point: 0,
+        total_point: 0,
+        created_at: new Date(),
+        current_index: 0,
+        word_list: pickedWords,
+        correct_list: [],
+      };
+      // キャッシュに保存
+      setGameState(initGameState);
       let newQuiz = makeSingleQuiz(pickedWords[0].word.text);
       setQuiz(newQuiz);
       setDraggableTextList(newQuiz.splitedText);
@@ -115,36 +133,51 @@ const Quiz: NextPage = () => {
     }
     if (data && quiz && str === quiz.answerText) {
       setDisplayText(" 正解 ");
-      let targetWordState = gameState.word_list[gameState.current_index];
-      setGameState({
-        type: "ADD_CORRECT_LIST",
-        payload: {
-          wordState: targetWordState,
-        },
-      });
-      let nextCorrectCount = gameState.correct_count + 1;
-      setGameState({
-        type: "SET_CORRECT_COUNT",
-        payload: {
-          correct_count: nextCorrectCount,
-        },
-      });
-      let nextVocaPoint = calcTotalVocabularyPoint(gameState.current_index);
-      setGameState({
-        type: "ADD_BOCABULARY_POINT",
-        payload: {
-          vocabulary_point: nextVocaPoint,
-        },
-      });
-      let nextIndex = gameState.current_index + 1;
-      setGameState({
-        type: "SET_NEXT_INDEX",
-        payload: {
-          current_index: nextIndex,
-        },
-      });
+      let targetWordState = {
+        isCorrect: true,
+        word: currentGameState.word_list[currentGameState.current_index].word,
+      };
+      let targetWordStateList = [
+        ...currentGameState.correct_list,
+        targetWordState,
+      ];
+      addCorrectList(targetWordStateList as WordState[]);
+      // setGameState({
+      //   type: "ADD_CORRECT_LIST",
+      //   payload: {
+      //     wordState: targetWordState,
+      //   },
+      // });
+      let nextCorrectCount = currentGameState.correct_count + 1;
+      setCorrectCount(nextCorrectCount);
+      // setGameState({
+      //   type: "SET_CORRECT_COUNT",
+      //   payload: {
+      //     correct_count: nextCorrectCount,
+      //   },
+      // });
+      let nextVocaPoint = calcTotalVocabularyPoint(
+        currentGameState.current_index
+      );
+      addBocabularyPoint(nextVocaPoint);
+      // setGameState({
+      //   type: "ADD_BOCABULARY_POINT",
+      //   payload: {
+      //     vocabulary_point: nextVocaPoint,
+      //   },
+      // });
+      let nextIndex = currentGameState.current_index + 1;
+      setNextIndex(nextIndex);
+      // setGameState({
+      //   type: "SET_NEXT_INDEX",
+      //   payload: {
+      //     current_index: nextIndex,
+      //   },
+      // });
       try {
-        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].word.text);
+        let newQuiz = makeSingleQuiz(
+          currentGameState.word_list[nextIndex].word.text
+        );
         setQuiz(newQuiz);
         setDraggableTextList(newQuiz.splitedText);
         setDownCount(10);
@@ -152,26 +185,39 @@ const Quiz: NextPage = () => {
           setDisplayText("");
         }, 1000);
       } catch {
-        setGameState({
-          type: "SET_GAMESTATE",
-          payload: {
-            gameState: {
-              id: gameState.id,
-              user_id: "ユーザーid",
-              trial_time: totalCount,
-              correct_count: nextCorrectCount,
-              vocabulary_point: nextVocaPoint,
-              total_point: 0,
-              created_at: gameState.created_at,
-              current_index: nextIndex,
-              word_list: gameState.word_list,
-              correct_list: [
-                ...gameState.correct_list,
-                { isCorrect: true, word: targetWordState.word },
-              ],
-            },
-          },
-        });
+        let finishGameState = {
+          id: currentGameState.id,
+          user_id: "ユーザーid",
+          trial_time: totalCount,
+          correct_count: nextCorrectCount,
+          vocabulary_point: nextVocaPoint,
+          total_point: 0,
+          created_at: currentGameState.created_at,
+          current_index: nextIndex,
+          word_list: currentGameState.word_list,
+          correct_list: [...currentGameState.correct_list, targetWordState],
+        };
+        setGameState(finishGameState as GameState);
+        // setGameState({
+        //   type: "SET_GAMESTATE",
+        //   payload: {
+        //     gameState: {
+        //       id: currentGameState.id,
+        //       user_id: "ユーザーid",
+        //       trial_time: totalCount,
+        //       correct_count: nextCorrectCount,
+        //       vocabulary_point: nextVocaPoint,
+        //       total_point: 0,
+        //       created_at: currentGameState.created_at,
+        //       current_index: nextIndex,
+        //       word_list: currentGameState.word_list,
+        //       correct_list: [
+        //         ...currentGameState.correct_list,
+        //         { isCorrect: true, word: targetWordState.word },
+        //       ],
+        //     },
+        //   },
+        // });
         router.push("/result");
       }
     }
@@ -180,15 +226,18 @@ const Quiz: NextPage = () => {
   useEffect(() => {
     if (downCount <= 0) {
       setDisplayText(" 時間切れ !");
-      let nextIndex = gameState.current_index + 1;
-      setGameState({
-        type: "SET_NEXT_INDEX",
-        payload: {
-          current_index: nextIndex,
-        },
-      });
+      let nextIndex = currentGameState.current_index + 1;
+      setNextIndex(nextIndex);
+      // setGameState({
+      //   type: "SET_NEXT_INDEX",
+      //   payload: {
+      //     current_index: nextIndex,
+      //   },
+      // });
       try {
-        let newQuiz = makeSingleQuiz(gameState.word_list[nextIndex].word.text);
+        let newQuiz = makeSingleQuiz(
+          currentGameState.word_list[nextIndex].word.text
+        );
         setQuiz(newQuiz);
         setDraggableTextList(newQuiz.splitedText);
         setDownCount(10);
@@ -196,23 +245,36 @@ const Quiz: NextPage = () => {
           setDisplayText("");
         }, 1000);
       } catch {
-        setGameState({
-          type: "SET_GAMESTATE",
-          payload: {
-            gameState: {
-              id: gameState.id,
-              user_id: "ユーザーid",
-              trial_time: totalCount,
-              correct_count: gameState.correct_count,
-              vocabulary_point: gameState.vocabulary_point,
-              total_point: 0,
-              created_at: gameState.created_at,
-              current_index: nextIndex,
-              word_list: gameState.word_list,
-              correct_list: [...gameState.correct_list],
-            },
-          },
-        });
+        let finishGameState = {
+          id: currentGameState.id,
+          user_id: "ユーザーid",
+          trial_time: totalCount,
+          correct_count: currentGameState.correct_count,
+          vocabulary_point: currentGameState.vocabulary_point,
+          total_point: 0,
+          created_at: currentGameState.created_at,
+          current_index: nextIndex,
+          word_list: currentGameState.word_list,
+          correct_list: [...currentGameState.correct_list],
+        };
+        setGameState(finishGameState);
+        // setGameState({
+        //   type: "SET_GAMESTATE",
+        //   payload: {
+        //     gameState: {
+        //       id: currentGameState.id,
+        //       user_id: "ユーザーid",
+        //       trial_time: totalCount,
+        //       correct_count: currentGameState.correct_count,
+        //       vocabulary_point: currentGameState.vocabulary_point,
+        //       total_point: 0,
+        //       created_at: currentGameState.created_at,
+        //       current_index: nextIndex,
+        //       word_list: currentGameState.word_list,
+        //       correct_list: [...currentGameState.correct_list],
+        //     },
+        //   },
+        // });
         router.push("/result");
       }
     }

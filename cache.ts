@@ -1,6 +1,9 @@
 import { makeVar, useReactiveVar } from "@apollo/client";
+import { GetWordListQuery, Word } from "./types/generated/graphql";
 
 import { GameState, WordState } from "./types/types";
+
+export const dbWordList = makeVar<Word[]>([]);
 
 export const gameStateVar = makeVar<GameState>({
   id: "",

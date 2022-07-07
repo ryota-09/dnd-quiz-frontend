@@ -7,11 +7,13 @@ import Layout from "../components/organisms/Layout";
 import { useGameState } from "../hooks/useGameState";
 import ResultRadarChart from "../components/organisms/ResultRadarChart";
 import { useDisplayList } from "../hooks/useDisplayList";
+import { useReactiveVar } from "@apollo/client";
+import { gameStateVar, setGameState } from "../cache";
 
 const Result: NextPage = () => {
-  const { gameState, setGameState } = useGameState();
+  // const { gameState, setGameState } = useGameState();
   const { resultWordList, makeDisplayList } = useDisplayList();
-
+  const currentGameState = useReactiveVar(gameStateVar);
   const [isOpen, setIsOpen] = useState(false);
 
   const router = useRouter();
@@ -47,28 +49,46 @@ const Result: NextPage = () => {
   };
 
   useEffect(() => {
-    makeDisplayList(gameState.word_list, gameState.correct_list);
-    setGameState({
-      type: "SET_GAMESTATE",
-      payload: {
-        gameState: {
-          id: gameState.id,
-          user_id: "ユーザーid",
-          trial_time: gameState.trial_time,
-          correct_count: gameState.correct_count,
-          vocabulary_point: gameState.vocabulary_point,
-          total_point: calcTotalPoint(
-            gameState.trial_time,
-            gameState.correct_count,
-            gameState.vocabulary_point
-          ),
-          created_at: gameState.created_at,
-          current_index: gameState.current_index,
-          word_list: gameState.word_list,
-          correct_list: gameState.correct_list,
-        },
-      },
-    });
+    makeDisplayList(currentGameState.word_list, currentGameState.correct_list);
+    let resultGameState = {
+      id: currentGameState.id,
+      user_id: "ユーザーid",
+      trial_time: currentGameState.trial_time,
+      correct_count: currentGameState.correct_count,
+      vocabulary_point: currentGameState.vocabulary_point,
+      total_point: calcTotalPoint(
+        currentGameState.trial_time,
+        currentGameState.correct_count,
+        currentGameState.vocabulary_point
+      ),
+      created_at: currentGameState.created_at,
+      current_index: currentGameState.current_index,
+      word_list: currentGameState.word_list,
+      correct_list: currentGameState.correct_list,
+    };
+    setGameState(resultGameState);
+    console.log(currentGameState);
+    // setGameState({
+    //   type: "SET_GAMESTATE",
+    //   payload: {
+    //     gameState: {
+    //       id: currentGameState.id,
+    //       user_id: "ユーザーid",
+    //       trial_time: currentGameState.trial_time,
+    //       correct_count: currentGameState.correct_count,
+    //       vocabulary_point: currentGameState.vocabulary_point,
+    //       total_point: calcTotalPoint(
+    //         currentGameState.trial_time,
+    //         currentGameState.correct_count,
+    //         currentGameState.vocabulary_point
+    //       ),
+    //       created_at: currentGameState.created_at,
+    //       current_index: currentGameState.current_index,
+    //       word_list: currentGameState.word_list,
+    //       correct_list: currentGameState.correct_list,
+    //     },
+    //   },
+    // });
   }, []);
   return (
     <>
@@ -84,16 +104,16 @@ const Result: NextPage = () => {
             <div className="flex">
               <div>
                 <p className="text-black-800 text-9xl md:text-4xl font-bold">
-                  タイム: {gameState.trial_time} s
+                  タイム: {currentGameState.trial_time} s
                 </p>
                 <p className="text-black-800 text-9xl md:text-4xl font-bold">
-                  正解数: {gameState.correct_count} / 5
+                  正解数: {currentGameState.correct_count} / 5
                 </p>
                 <p className="text-black-800 text-9xl md:text-4xl font-bold">
-                  語い力: {gameState.vocabulary_point} pt
+                  語い力: {currentGameState.vocabulary_point} pt
                 </p>
                 <p className="text-red-800 text-9xl md:text-4xl font-bold">
-                  総合点: {gameState.total_point} pt
+                  総合点: {currentGameState.total_point} pt
                 </p>
                 <button
                   className="inline-block bg-green-400 hover:bg-green-600 active:bg-indigo-700 focus-visible:ring ring-green-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 px-8 py-3"
@@ -112,9 +132,9 @@ const Result: NextPage = () => {
               </div>
               <div>
                 <ResultRadarChart
-                  trialTime={gameState.trial_time}
-                  correctCount={gameState.correct_count}
-                  vocabularyPoint={gameState.vocabulary_point}
+                  trialTime={currentGameState.trial_time}
+                  correctCount={currentGameState.correct_count}
+                  vocabularyPoint={currentGameState.vocabulary_point}
                 />
               </div>
             </div>
