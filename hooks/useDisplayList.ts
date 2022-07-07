@@ -14,7 +14,6 @@ export const useDisplayList = () => {
           if (originOne.word.text === correctOne.word.text) {
             targetList.push(correctOne);
             frag = true;
-            console.log("ifの中", targetList);
           }
         }
         if (!frag) {

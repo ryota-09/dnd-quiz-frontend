@@ -15,7 +15,7 @@ export const useCreateWordForm = () => {
       cache.modify({
         fields: {
           word(existingWord, { toReference }) {
-            return existingWord;
+            return [toReference(cacheId), ...existingWord];
           },
         },
       });
