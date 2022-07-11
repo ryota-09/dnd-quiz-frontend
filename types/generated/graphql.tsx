@@ -154,7 +154,7 @@ export type GetGamesByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetGamesByUserIdQuery = { __typename?: 'Query', getGameListByUerId: Array<{ __typename?: 'Game', id: string, user_id: string, trial_time: number, correct_count: number, vocabulary_point: number, total_point: number, created_at: any }> };
+export type GetGamesByUserIdQuery = { __typename?: 'Query', getGameListByUerId: Array<{ __typename?: 'Game',  id: string, user_id: string, trial_time: number, correct_count: number, vocabulary_point: number, total_point: number, created_at: any }> };
 
 export type CreateGameMutationVariables = Exact<{
   user_id: Scalars['String'];

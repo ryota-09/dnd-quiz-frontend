@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -6,13 +5,29 @@ import { useEffect, useState } from "react";
 import Layout from "../components/organisms/Layout";
 import ResultRadarChart from "../components/organisms/ResultRadarChart";
 import { useDisplayList } from "../hooks/useDisplayList";
-import { useReactiveVar } from "@apollo/client";
+import { useMutation, useReactiveVar } from "@apollo/client";
 import { gameStateVar, setGameState } from "../cache";
+import { GameState } from "../types/types";
+import { CreateGameMutation } from "../types/generated/graphql";
+import { CREATE_GAME } from "../queries/queries";
 
 const Result: NextPage = () => {
   const { resultWordList, makeDisplayList } = useDisplayList();
   const currentGameState = useReactiveVar(gameStateVar);
   const [isOpen, setIsOpen] = useState(false);
+
+  const [CreateGame] = useMutation<CreateGameMutation>(CREATE_GAME, {
+    update(cache, { data: createGame }) {
+      const cacheId = cache.identify(createGame);
+      cache.modify({
+        fields: {
+          word(existingGame, { toReference }) {
+            return [toReference(cacheId), ...existingGame];
+          },
+        },
+      });
+    },
+  });
 
   const router = useRouter();
 
@@ -46,11 +61,28 @@ const Result: NextPage = () => {
     return timePoint + correctPoint + vocaPoint;
   };
 
+  const saveGameStateToDb = async (finishedGameState: GameState) => {
+    try {
+      await CreateGame({
+        variables: {
+          user_id: finishedGameState.user_id,
+          trial_time: finishedGameState.trial_time,
+          correct_count: finishedGameState.correct_count,
+          vocabulary_point: finishedGameState.vocabulary_point,
+          total_point: finishedGameState.total_point,
+          created_at: finishedGameState.created_at,
+        },
+      });
+    } catch (error) {
+      console.log("エラー", error);
+    }
+  };
+
   useEffect(() => {
     makeDisplayList(currentGameState.word_list, currentGameState.correct_list);
     let resultGameState = {
       id: currentGameState.id,
-      user_id: "ユーザーid",
+      user_id: "81b25a8f-2458-4df8-a1a9-4de2bcd105bf",
       trial_time: currentGameState.trial_time,
       correct_count: currentGameState.correct_count,
       vocabulary_point: currentGameState.vocabulary_point,
@@ -65,6 +97,7 @@ const Result: NextPage = () => {
       correct_list: currentGameState.correct_list,
     };
     setGameState(resultGameState);
+    saveGameStateToDb(resultGameState);
   }, []);
   return (
     <>
