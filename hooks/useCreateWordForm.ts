@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useMutation } from "@apollo/client";
 
 import { CREATE_WORD } from "../queries/queries";

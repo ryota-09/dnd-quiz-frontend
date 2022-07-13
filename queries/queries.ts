@@ -99,3 +99,45 @@ export const CREATE_GAME = gql`
     }
   }
 `;
+
+export const LOGIN_USER = gql`
+  mutation login(
+    $email: String!
+    $password: String!
+  ) {
+    login_user_by_email(
+      loginUserInput: {
+        email: $email
+        password: $password
+      }
+    ) {
+      user: {
+      id
+      user_id
+      username
+      img_path
+      }
+      access_token
+      refresh_token
+    }
+  }
+`;
+
+export const REFRESH_TOKEN = gql`
+  mutation refreshToken {
+    user {
+      username
+      email
+    }
+    access_token
+    refresh_token
+  }
+`;
+
+export const LOGOUT_USER = gql`
+  mutation logout{
+    data: {
+      logout
+    }
+  }
+`;
