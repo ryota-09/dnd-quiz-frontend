@@ -4,7 +4,7 @@ import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../queries/queries";
 import { LoginMutation } from "../types/generated/graphql";
 
-export const useCreateWordForm = () => {
+export const useLoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [textFormError, setTextFormError] = useState("");
@@ -19,6 +19,7 @@ export const useCreateWordForm = () => {
           },
         },
       });
+      console.log(login)
     },
   });
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

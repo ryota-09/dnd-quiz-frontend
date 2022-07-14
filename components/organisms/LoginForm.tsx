@@ -1,15 +1,15 @@
-import { useCreateWordForm } from "../../hooks/useCreateWordForm";
+import { useLoginForm } from "../../hooks/useLoginForm";
 
 const LoginForm = () => {
   const {
-    text,
-    level,
-    handleSubmit,
+    email,
+    password,
     textFormError,
+    setEmail,
     setTextFormError,
-    setText,
-    setLevel,
-  } = useCreateWordForm();
+    handleSubmit,
+    setPassword,
+  } = useLoginForm();
 
   return (
     <>
@@ -20,20 +20,18 @@ const LoginForm = () => {
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
-                    htmlFor="text"
+                    htmlFor="email"
                     className="block text-sm font-medium text-gray-700"
                   >
                     E-mail
                   </label>
                   <div className="mt-1">
                     <input
-                      id="text"
-                      name="text"
+                      id="email"
+                      name="email"
                       placeholder="E-mail"
-                      maxLength={5}
-                      minLength={5}
-                      value={text}
-                      onChange={(event) => setText(event.target.value)}
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
                       required
                       className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-500 ease-in-out transform border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300"
                     />
@@ -42,18 +40,19 @@ const LoginForm = () => {
 
                 <div>
                   <label
-                    htmlFor="level"
+                    htmlFor="password"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Password
                   </label>
                   <div className="mt-1">
                     <input
-                      id="level"
-                      name="level"
+                      id="password"
+                      name="password"
                       placeholder="Password"
-                      value={level}
-                      onChange={(event) => setLevel(event.target.value)}
+                      minLength={8}
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
                       className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-500 ease-in-out transform border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300"
                     />
                   </div>
@@ -61,7 +60,7 @@ const LoginForm = () => {
                 <div>
                   <button
                     type="submit"
-                    disabled={!text || !level}
+                    disabled={!email || !password}
                     className="flex items-center justify-center w-full px-10 py-4 text-base font-medium text-center text-white transition duration-500 ease-in-out transform bg-green-400 rounded-xl hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Log in
