@@ -179,7 +179,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', access_token: string, refresh_token: string, user: { __typename?: 'User', id: string, username: string, img_path?: string | null } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', access_token: string, refresh_token: string, user: { __typename?: 'User', id: string, username: string, email: string, password: string, img_path?: string | null, created_at: any, updated_at: any } } };
 
 export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -436,7 +436,11 @@ export const LoginDocument = gql`
     user {
       id
       username
+      email
+      password
       img_path
+      created_at
+      updated_at
     }
     access_token
     refresh_token

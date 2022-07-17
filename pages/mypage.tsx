@@ -1,18 +1,20 @@
-import { useQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useQuery, useReactiveVar } from "@apollo/client";
 
 import HistoryLineChart from "../components/organisms/HistoryLineChart";
 import Layout from "../components/organisms/Layout";
 import { GET_GAMES_BY_USERID } from "../queries/queries";
 import { GetGamesByUserIdQuery } from "../types/generated/graphql";
+import { currentUserVar } from "../cache";
+import { FC } from "react";
 
-const MyPage = () => {
+const MyPage: FC = () => {
   const { data, error, loading } = useQuery<GetGamesByUserIdQuery>(
     GET_GAMES_BY_USERID,
     {
       variables: { userId: "81b25a8f-2458-4df8-a1a9-4de2bcd105bf" },
     }
   );
+  const currentUser = useReactiveVar(currentUserVar);
   return (
     <>
       <Layout title="マイページ">
@@ -26,6 +28,7 @@ const MyPage = () => {
             <p>ローディング中...</p>
           ) : (
             <div>
+              {console.log(currentUser)}
               <HistoryLineChart games={data.getGameListByUerId} />
               {data.getGameListByUerId.map((game, index) => (
                 <div key={index}>

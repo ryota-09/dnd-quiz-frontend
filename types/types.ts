@@ -6,7 +6,7 @@ export type User = {
   img_path: string;
   created_at: Date;
   updated_at: Date;
-  game_history: Game[];
+  game_history?: Game[];
 };
 
 export type SingleQuiz = {

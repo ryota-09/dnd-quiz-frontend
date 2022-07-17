@@ -106,7 +106,11 @@ export const LOGIN_USER = gql`
       user {
         id
         username
+        email
+        password
         img_path
+        created_at
+        updated_at
       }
       access_token
       refresh_token
