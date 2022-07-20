@@ -1,10 +1,13 @@
 import { FormEvent, useState } from "react";
 import { useMutation } from "@apollo/client";
+import Cookies from "universal-cookie"
 
 import { LOGIN_USER } from "../queries/queries";
 import { LoginMutation } from "../types/generated/graphql";
 import { setCurrentUser } from "../cache";
 import { User } from "../types/types";
+
+const cookie = new Cookies();
 
 export const useLoginForm = () => {
   const [email, setEmail] = useState("");
@@ -21,17 +24,21 @@ export const useLoginForm = () => {
           },
         },
       });
-      const newUser: User = {
-        id: login.user.id,
-        user_name: login.user.username,
-        email: login.user.email,
-        password: login.user.password,
-        img_path: login.user.img_path,
-        created_at: login.user.created_at,
-        updated_at: login.user.updated_at,
-        game_history: [],
-      };
-      setCurrentUser(newUser);
+
+      cookie.set("user_id", login.user.id);
+      cookie.set("access_token", login.access_token);
+      cookie.set("refresh_token", login.refresh_token);
+      // const newUser: User = {
+      //   id: login.user.id,
+      //   user_name: login.user.username,
+      //   email: login.user.email,
+      //   password: login.user.password,
+      //   img_path: login.user.img_path,
+      //   created_at: login.user.created_at,
+      //   updated_at: login.user.updated_at,
+      //   game_history: [],
+      // };
+      // setCurrentUser(newUser);
     },
   });
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

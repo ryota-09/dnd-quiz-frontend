@@ -1,17 +1,20 @@
 import { useQuery, useReactiveVar } from "@apollo/client";
+import Cookies from "universal-cookie";
 
 import HistoryLineChart from "../components/organisms/HistoryLineChart";
 import Layout from "../components/organisms/Layout";
 import { GET_GAMES_BY_USERID } from "../queries/queries";
 import { GetGamesByUserIdQuery } from "../types/generated/graphql";
 import { currentUserVar } from "../cache";
-import { FC } from "react";
+import { NextPage } from "next";
 
-const MyPage: FC = () => {
+const cookie = new Cookies();
+
+const MyPage: NextPage = () => {
   const { data, error, loading } = useQuery<GetGamesByUserIdQuery>(
     GET_GAMES_BY_USERID,
     {
-      variables: { userId: "81b25a8f-2458-4df8-a1a9-4de2bcd105bf" },
+      variables: { userId: cookie.get("user_id") },
     }
   );
   const currentUser = useReactiveVar(currentUserVar);
@@ -28,7 +31,7 @@ const MyPage: FC = () => {
             <p>ローディング中...</p>
           ) : (
             <div>
-              {console.log(currentUser)}
+              <p>{currentUser.user_name}</p>
               <HistoryLineChart games={data.getGameListByUerId} />
               {data.getGameListByUerId.map((game, index) => (
                 <div key={index}>
