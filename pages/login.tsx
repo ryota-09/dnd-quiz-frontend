@@ -1,7 +1,8 @@
+import { NextPage } from "next";
 import Layout from "../components/organisms/Layout";
 import LoginForm from "../components/organisms/LoginForm";
 
-const Login = () => {
+const Login: NextPage = () => {
   return (
     <>
       <Layout title="Home">

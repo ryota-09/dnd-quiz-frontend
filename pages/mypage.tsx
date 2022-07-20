@@ -4,37 +4,53 @@ import router from "next/router";
 
 import HistoryLineChart from "../components/organisms/HistoryLineChart";
 import Layout from "../components/organisms/Layout";
-import { GET_GAMES_BY_USERID } from "../queries/queries";
-import { GetGamesByUserIdQuery,  } from "../types/generated/graphql";
+import { GET_GAMES_BY_USERID, GET_USER_BY_ID } from "../queries/queries";
+import {
+  GetGamesByUserIdQuery,
+  GetUerByIdQuery,
+} from "../types/generated/graphql";
 import { currentUserVar, setCurrentUser } from "../cache";
 import { NextPage } from "next";
+import { User } from "../types/types";
+import { useEffect } from "react";
 
 const cookie = new Cookies();
 
 const MyPage: NextPage = () => {
   const userId = cookie.get("user_id");
-  if (!userId) {
-    router.push("/login");
-  }
+
   const { data, error, loading } = useQuery<GetGamesByUserIdQuery>(
     GET_GAMES_BY_USERID,
     {
       variables: { userId: userId },
     }
   );
-  // const {} = useQuery<>
-  // const newUser: User = {
-  //   id: login.user.id,
-  //   user_name: login.user.username,
-  //   email: login.user.email,
-  //   password: login.user.password,
-  //   img_path: login.user.img_path,
-  //   created_at: login.user.created_at,
-  //   updated_at: login.user.updated_at,
-  //   game_history: [],
-  // };
-  // setCurrentUser(newUser);
   const currentUser = useReactiveVar(currentUserVar);
+  const {
+    data: userData,
+    error: userError,
+    loading: userLoading,
+  } = useQuery<GetUerByIdQuery>(GET_USER_BY_ID, {
+    variables: { userId: userId },
+  });
+  useEffect(() => {
+    if (!userId) {
+      router.push("/login");
+    }
+    if (!userLoading) {
+      const newUser: User = {
+        id: userData.oneUserById.id,
+        user_name: userData.oneUserById.username,
+        email: "",
+        password: "",
+        img_path: userData.oneUserById.img_path,
+        created_at: null,
+        updated_at: null,
+        game_history: [],
+      };
+      setCurrentUser(newUser);
+    }
+  }, []);
   return (
     <>
       <Layout title="マイページ">
