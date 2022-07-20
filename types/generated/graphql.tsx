@@ -95,6 +95,7 @@ export type Query = {
   getGameListByUerId: Array<Game>;
   getGamesTopThree: Array<Game>;
   oneUser: User;
+  oneUserById: User;
   users: Array<User>;
   words: Array<Word>;
 };
@@ -107,6 +108,11 @@ export type QueryGetGameListByUerIdArgs = {
 
 export type QueryOneUserArgs = {
   user: LoginUserInput;
+};
+
+
+export type QueryOneUserByIdArgs = {
+  userId: Scalars['String'];
 };
 
 export type User = {
@@ -172,6 +178,13 @@ export type CreateGameMutationVariables = Exact<{
 
 
 export type CreateGameMutation = { __typename?: 'Mutation', createGame: { __typename?: 'Game', id: string, user_id: string, trial_time: number, correct_count: number, vocabulary_point: number, total_point: number, created_at: any } };
+
+export type GetUerByIdQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type GetUerByIdQuery = { __typename?: 'Query', oneUserById: { __typename?: 'User', id: string, username: string, img_path?: string | null } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -430,6 +443,43 @@ export function useCreateGameMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateGameMutationHookResult = ReturnType<typeof useCreateGameMutation>;
 export type CreateGameMutationResult = Apollo.MutationResult<CreateGameMutation>;
 export type CreateGameMutationOptions = Apollo.BaseMutationOptions<CreateGameMutation, CreateGameMutationVariables>;
+export const GetUerByIdDocument = gql`
+    query getUerById($userId: String!) {
+  oneUserById(userId: $userId) {
+    id
+    username
+    img_path
+  }
+}
+    `;
+
+/**
+ * __useGetUerByIdQuery__
+ *
+ * To run a query within a React component, call `useGetUerByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUerByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUerByIdQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetUerByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUerByIdQuery, GetUerByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUerByIdQuery, GetUerByIdQueryVariables>(GetUerByIdDocument, options);
+      }
+export function useGetUerByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUerByIdQuery, GetUerByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUerByIdQuery, GetUerByIdQueryVariables>(GetUerByIdDocument, options);
+        }
+export type GetUerByIdQueryHookResult = ReturnType<typeof useGetUerByIdQuery>;
+export type GetUerByIdLazyQueryHookResult = ReturnType<typeof useGetUerByIdLazyQuery>;
+export type GetUerByIdQueryResult = Apollo.QueryResult<GetUerByIdQuery, GetUerByIdQueryVariables>;
 export const LoginDocument = gql`
     mutation login($email: String!, $password: String!) {
   login(loginUserInput: {email: $email, password: $password}) {

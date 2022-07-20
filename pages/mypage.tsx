@@ -1,22 +1,39 @@
 import { useQuery, useReactiveVar } from "@apollo/client";
 import Cookies from "universal-cookie";
+import router from "next/router";
 
 import HistoryLineChart from "../components/organisms/HistoryLineChart";
 import Layout from "../components/organisms/Layout";
 import { GET_GAMES_BY_USERID } from "../queries/queries";
-import { GetGamesByUserIdQuery } from "../types/generated/graphql";
-import { currentUserVar } from "../cache";
+import { GetGamesByUserIdQuery,  } from "../types/generated/graphql";
+import { currentUserVar, setCurrentUser } from "../cache";
 import { NextPage } from "next";
 
 const cookie = new Cookies();
 
 const MyPage: NextPage = () => {
+  const userId = cookie.get("user_id");
+  if (!userId) {
+    router.push("/login");
+  }
   const { data, error, loading } = useQuery<GetGamesByUserIdQuery>(
     GET_GAMES_BY_USERID,
     {
-      variables: { userId: cookie.get("user_id") },
+      variables: { userId: userId },
     }
   );
+  // const {} = useQuery<>
+  // const newUser: User = {
+  //   id: login.user.id,
+  //   user_name: login.user.username,
+  //   email: login.user.email,
+  //   password: login.user.password,
+  //   img_path: login.user.img_path,
+  //   created_at: login.user.created_at,
+  //   updated_at: login.user.updated_at,
+  //   game_history: [],
+  // };
+  // setCurrentUser(newUser);
   const currentUser = useReactiveVar(currentUserVar);
   return (
     <>
