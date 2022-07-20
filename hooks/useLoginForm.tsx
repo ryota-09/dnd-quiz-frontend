@@ -6,6 +6,7 @@ import { LOGIN_USER } from "../queries/queries";
 import { LoginMutation } from "../types/generated/graphql";
 import { setCurrentUser } from "../cache";
 import { User } from "../types/types";
+import router from "next/router";
 
 const cookie = new Cookies();
 
@@ -28,6 +29,7 @@ export const useLoginForm = () => {
       cookie.set("user_id", login.user.id);
       cookie.set("access_token", login.access_token);
       cookie.set("refresh_token", login.refresh_token);
+      router.push("/mypage")
     },
   });
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

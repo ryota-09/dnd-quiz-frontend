@@ -37,6 +37,8 @@ const MyPage: NextPage = () => {
     if (!userId) {
       router.push("/login");
     }
+  }, []);
+  useEffect(() => {
     if (!userLoading) {
       const newUser: User = {
         id: userData.oneUserById.id,
@@ -50,7 +52,7 @@ const MyPage: NextPage = () => {
       };
       setCurrentUser(newUser);
     }
-  }, []);
+  }, [userLoading]);
   return (
     <>
       <Layout title="マイページ">
