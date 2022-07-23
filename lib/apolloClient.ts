@@ -5,7 +5,11 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 import fetch from "cross-fetch";
+import Cookies from "universal-cookie";
+
+const cookie = new Cookies();
 
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
@@ -14,7 +18,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = localStorage.getItem("token");
+  const token = cookie.get("access_token");
   // return the headers to the context so httpLink can read them
   return {
     headers: {
@@ -28,7 +32,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 const createApolloClient = () => {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: httpLink,
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
   });
 };

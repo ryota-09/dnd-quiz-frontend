@@ -2,12 +2,39 @@ import { FC } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
+import Cookies from "universal-cookie";
+import { useMutation } from "@apollo/client";
+
+import { LOGOUT_USER } from "../../queries/queries";
+import { LogoutMutation } from "../../types/generated/graphql";
+
+const cookie = new Cookies();
 
 type TubTitle = {
   title: string;
 };
 
 const Layout: FC<TubTitle> = ({ title, children }) => {
+  const [logout] = useMutation<LogoutMutation>(LOGOUT_USER, {
+    update(cache, { data: frag }) {
+      const cacheId = cache.identify(frag);
+      cache.modify({
+        fields: {
+          logout(existingData, { toReference }) {
+            return [toReference(cacheId), ...existingData];
+          },
+        },
+      });
+    },
+  });
+
+  const logoutFn = () => {
+    const frag = logout();
+    cookie.remove("user_id");
+    cookie.remove("refresh_token");
+    cookie.remove("access_token");
+    console.log(frag);
+  };
   return (
     <>
       <div className="flex items-center flex-col min-h-screen">
@@ -43,6 +70,15 @@ const Layout: FC<TubTitle> = ({ title, children }) => {
                     className="text-gray-600 hover:text-green-300 active:text-green-700 text-lg font-semibold transition duration-100"
                   >
                     ログイン
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a
+                    onClick={logoutFn}
+                    data-testid="logout-nav"
+                    className="text-gray-600 hover:text-green-300 active:text-green-700 text-lg font-semibold transition duration-100"
+                  >
+                    ログアウト
                   </a>
                 </Link>
                 <Link href="/mypage">
