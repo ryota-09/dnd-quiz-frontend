@@ -28,11 +28,43 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const errorLink = onError(
+  ({ graphQLErrors, networkError, operation, forward }) => {
+    const refreshToken = cookie.get("refresh_token");
+    if (graphQLErrors) {
+      for (let err of graphQLErrors) {
+        console.log(err.extensions.code);
+        switch (err.extensions.code) {
+          // Apollo Server sets code to UNAUTHENTICATED
+          // when an AuthenticationError is thrown in a resolver
+          case "UNAUTHENTICATED":
+            // Modify the operation context with a new token
+            const oldHeaders = operation.getContext().headers;
+            operation.setContext({
+              headers: {
+                ...oldHeaders,
+                authorization: refreshToken,
+              },
+            });
+            // Retry the request, returning the new observable
+            return forward(operation);
+        }
+      }
+    }
+
+    // To retry on network errors, we recommend the RetryLink
+    // instead of the onError link. This just logs the error.
+    if (networkError) {
+      console.log(`[Network error]: ${networkError}`);
+    }
+  }
+);
+
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 const createApolloClient = () => {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: authLink.concat(httpLink),
+    link: authLink.concat(errorLink).concat(httpLink),
     cache: new InMemoryCache(),
   });
 };

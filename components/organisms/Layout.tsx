@@ -28,8 +28,8 @@ const Layout: FC<TubTitle> = ({ title, children }) => {
     },
   });
 
-  const logoutFn = () => {
-    const frag = logout();
+  const logoutFn = async () => {
+    const frag = await logout();
     cookie.remove("user_id");
     cookie.remove("refresh_token");
     cookie.remove("access_token");
