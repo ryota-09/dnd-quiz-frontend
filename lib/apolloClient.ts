@@ -3,6 +3,7 @@ import {
   createHttpLink,
   InMemoryCache,
   NormalizedCacheObject,
+  from,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
@@ -13,6 +14,7 @@ const cookie = new Cookies();
 
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
+  // credentials: "same-origin",
   fetch,
 });
 
@@ -39,11 +41,13 @@ const errorLink = onError(
           // when an AuthenticationError is thrown in a resolver
           case "UNAUTHENTICATED":
             // Modify the operation context with a new token
+            console.log("認証エラー処理");
+            console.log(refreshToken);
             const oldHeaders = operation.getContext().headers;
             operation.setContext({
               headers: {
                 ...oldHeaders,
-                authorization: refreshToken,
+                authorization: `Bearer ${refreshToken}`,
               },
             });
             // Retry the request, returning the new observable
@@ -64,7 +68,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 const createApolloClient = () => {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: authLink.concat(errorLink).concat(httpLink),
+    link: from([authLink, errorLink, httpLink]),
     cache: new InMemoryCache(),
   });
 };

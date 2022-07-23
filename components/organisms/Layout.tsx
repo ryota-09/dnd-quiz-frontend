@@ -15,19 +15,35 @@ type TubTitle = {
 };
 
 const Layout: FC<TubTitle> = ({ title, children }) => {
-  const [logout] = useMutation<LogoutMutation>(LOGOUT_USER, {
-    update(cache, { data: frag }) {
-      const cacheId = cache.identify(frag);
-      cache.modify({
-        fields: {
-          logout(existingData, { toReference }) {
-            return [toReference(cacheId), ...existingData];
-          },
-        },
-      });
-    },
-  });
+  // const [logout] = useMutation<LogoutMutation>(LOGOUT_USER, {
+  //   update(cache, { data: frag }) {
+  //     const cacheId = cache.identify(frag);
+  //     cache.modify({
+  //       fields: {
+  //         logout(existingData, { toReference }) {
+  //           return [toReference(cacheId), ...existingData];
+  //         },
+  //       },
+  //     });
+  //   },
+  // });
+  // const logout = async () => {
+  //   const { data } = await executeLogoutMutation({
+  //     variables: {
+  //       refreshToken: storage.getItem(AUTH_TOKEN),
+  //     },
+  //   });
 
+  //   if (data.logout) {
+  //     await client.clearStore();
+
+  //     storage.removeItem(AUTH_TOKEN);
+  //     store.remove(AUTH_TOKEN);
+  //     navigate('/auth');
+  //   }
+  // };
+  const [logout, { client }] =
+    useMutation<LogoutMutation /* {logout: boolean }*/>(LOGOUT_USER);
   const logoutFn = async () => {
     const frag = await logout();
     cookie.remove("user_id");
