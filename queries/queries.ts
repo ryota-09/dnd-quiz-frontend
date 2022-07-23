@@ -100,6 +100,16 @@ export const CREATE_GAME = gql`
   }
 `;
 
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    users {
+      id
+      username
+      img_path
+    }
+  }
+`;
+
 export const GET_USER_BY_ID = gql`
   query getUerById($userId: String!) {
     oneUserById(userId: $userId) {
@@ -131,11 +141,6 @@ export const LOGIN_USER = gql`
 export const REFRESH_TOKEN = gql`
   mutation refreshToken {
     refreshToken {
-      user {
-        id
-        username
-        img_path
-      }
       access_token
       refresh_token
     }

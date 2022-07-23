@@ -179,6 +179,11 @@ export type CreateGameMutationVariables = Exact<{
 
 export type CreateGameMutation = { __typename?: 'Mutation', createGame: { __typename?: 'Game', id: string, user_id: string, trial_time: number, correct_count: number, vocabulary_point: number, total_point: number, created_at: any } };
 
+export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, username: string, img_path?: string | null }> };
+
 export type GetUerByIdQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
@@ -197,7 +202,7 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Lo
 export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'LoginResponse', access_token: string, refresh_token: string, user: { __typename?: 'User', id: string, username: string, img_path?: string | null } } };
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'LoginResponse', access_token: string, refresh_token: string } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -443,6 +448,42 @@ export function useCreateGameMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateGameMutationHookResult = ReturnType<typeof useCreateGameMutation>;
 export type CreateGameMutationResult = Apollo.MutationResult<CreateGameMutation>;
 export type CreateGameMutationOptions = Apollo.BaseMutationOptions<CreateGameMutation, CreateGameMutationVariables>;
+export const GetAllUsersDocument = gql`
+    query GetAllUsers {
+  users {
+    id
+    username
+    img_path
+  }
+}
+    `;
+
+/**
+ * __useGetAllUsersQuery__
+ *
+ * To run a query within a React component, call `useGetAllUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+      }
+export function useGetAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+        }
+export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
+export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
+export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
 export const GetUerByIdDocument = gql`
     query getUerById($userId: String!) {
   oneUserById(userId: $userId) {
@@ -527,11 +568,6 @@ export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, Log
 export const RefreshTokenDocument = gql`
     mutation refreshToken {
   refreshToken {
-    user {
-      id
-      username
-      img_path
-    }
     access_token
     refresh_token
   }

@@ -12,6 +12,14 @@ import Cookies from "universal-cookie";
 
 const cookie = new Cookies();
 
+const updateToken = async () => {
+  try {
+
+  }catch(error){
+
+  }
+}
+
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
   // credentials: "same-origin",
@@ -41,8 +49,6 @@ const errorLink = onError(
           // when an AuthenticationError is thrown in a resolver
           case "UNAUTHENTICATED":
             // Modify the operation context with a new token
-            console.log("認証エラー処理");
-            console.log(refreshToken);
             const oldHeaders = operation.getContext().headers;
             operation.setContext({
               headers: {
