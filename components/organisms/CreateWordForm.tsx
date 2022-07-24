@@ -14,14 +14,14 @@ const CreateWordForm = () => {
   return (
     <>
       <section>
-        <div className="flex flex-col justify-center sm:px-6 lg:px-8">
+        <div className="flex flex-col justify-center">
           {/* <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <p className="mt-6 text-3xl font-extrabold text-center text-neutral-600">
               問題作成
             </p>
           </div> */}
 
-          <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <div className="px-4 py-8 sm:px-10">
               <h3 className="text-center font-bold text-md mb-5">クイズになる５文字の単語を作成</h3>
               <form className="space-y-6" onSubmit={handleSubmit}>

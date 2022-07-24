@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import CreateWordForm from "../components/organisms/CreateWordForm";
+import LankingArea from "../components/templates/LankingArea";
 import Layout from "../components/organisms/Layout";
 
 const Home: React.FC = () => {
@@ -19,7 +20,10 @@ const Home: React.FC = () => {
           >
             スタート
           </button>
-          <CreateWordForm />
+          <div className="flex">
+            <LankingArea />
+            <CreateWordForm />
+          </div>
         </div>
       </Layout>
     </>
