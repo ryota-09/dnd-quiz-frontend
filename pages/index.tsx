@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import CreateWordForm from "../components/organisms/createWordForm";
+import CreateWordForm from "../components/organisms/CreateWordForm";
 import Layout from "../components/organisms/Layout";
 
 const Home: React.FC = () => {
@@ -8,7 +8,6 @@ const Home: React.FC = () => {
     <>
       <Layout title="Home">
         <div className="flex items-center flex-col min-h-screen">
-          <CreateWordForm />
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <p className="mt-6 mb-6 text-3xl font-extrabold text-center text-neutral-600">
               文字並び替えクイズ
@@ -20,6 +19,7 @@ const Home: React.FC = () => {
           >
             スタート
           </button>
+          <CreateWordForm />
         </div>
       </Layout>
     </>

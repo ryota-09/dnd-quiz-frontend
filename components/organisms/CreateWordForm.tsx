@@ -23,6 +23,7 @@ const CreateWordForm = () => {
 
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div className="px-4 py-8 sm:px-10">
+              <h3 className="text-center font-bold text-md mb-5">クイズになる５文字の単語を作成</h3>
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
@@ -57,7 +58,7 @@ const CreateWordForm = () => {
                     <input
                       id="level"
                       name="level"
-                      placeholder="文字の難易度を入力"
+                      placeholder="1~10の数字で入力"
                       value={level}
                       onChange={(event) => setLevel(event.target.value)}
                       className="block w-full px-5 py-3 text-base text-neutral-600 placeholder-gray-300 transition duration-500 ease-in-out transform border border-transparent rounded-lg bg-gray-50 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-300"
