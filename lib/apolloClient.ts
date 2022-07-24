@@ -9,16 +9,9 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import fetch from "cross-fetch";
 import Cookies from "universal-cookie";
+import { useUpdateToken } from "../hooks/useRefreshToken";
 
 const cookie = new Cookies();
-
-const updateToken = async () => {
-  try {
-
-  }catch(error){
-
-  }
-}
 
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL,
@@ -40,10 +33,9 @@ const authLink = setContext((_, { headers }) => {
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
-    const refreshToken = cookie.get("refresh_token");
+    let refreshToken = cookie.get("refresh_token");
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
-        console.log(err.extensions.code);
         switch (err.extensions.code) {
           // Apollo Server sets code to UNAUTHENTICATED
           // when an AuthenticationError is thrown in a resolver
@@ -55,6 +47,10 @@ const errorLink = onError(
                 ...oldHeaders,
                 authorization: `Bearer ${refreshToken}`,
               },
+            });
+            // refreshトークンをアップデートするときに用いる。
+            useUpdateToken(refreshToken).then((res) => {
+              refreshToken = res;
             });
             // Retry the request, returning the new observable
             return forward(operation);
