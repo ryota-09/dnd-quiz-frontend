@@ -20,7 +20,7 @@ const Home: React.FC = () => {
           >
             スタート
           </button>
-          <div className="flex">
+          <div className="flex mt-10">
             <LankingArea />
             <CreateWordForm />
           </div>
