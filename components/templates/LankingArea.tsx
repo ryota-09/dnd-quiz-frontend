@@ -1,43 +1,115 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { GET_ALL_GAMES } from "../../queries/queries";
-import { GetAllGamesQuery } from "../../types/generated/graphql";
-import { Game } from "../../types/types";
+import { GET_ALL_GAMES, GET_ALL_USERS } from "../../queries/queries";
+import {
+  GetAllGamesQuery,
+  GetAllUsersQuery,
+} from "../../types/generated/graphql";
+import { Game, User } from "../../types/types";
 import LankingCard from "../organisms/LankingCard";
 
 const LankingArea = () => {
-  const { data, error, loading } = useQuery<GetAllGamesQuery>(GET_ALL_GAMES);
-  const [displayedList, setDisplayedList] = useState<Game[]>([]);
+  const {
+    data: gameData,
+    error: gameError,
+    loading: gameLoading,
+  } = useQuery<GetAllGamesQuery>(GET_ALL_GAMES);
+  const {
+    data: userData,
+    error: userError,
+    loading: userLoading,
+  } = useQuery<GetAllUsersQuery>(GET_ALL_USERS);
+  const [displayedList, setDisplayedList] = useState<
+    { user: Pick<User, "id" | "user_name" | "img_path">; game: Game }[]
+  >([]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (data) {
-      let targetList: Game[] = [];
+    if (gameData) {
+      let targetList: {
+        user: Pick<User, "id" | "user_name" | "img_path">;
+        game: Game;
+      }[] = [];
+      let targetObj: {
+        user: Pick<User, "id" | "user_name" | "img_path">;
+        game: Game;
+      };
       let index = 0;
-      for (const game of data.games) {
+      for (const game of gameData.games) {
         index++;
+        for (const user of userData.users) {
+          if (user.id === game.user_id) {
+            targetObj = {
+              user: {
+                id: user.id,
+                user_name: user.username,
+                img_path: user.img_path,
+              },
+              game: game,
+            };
+          }
+        }
         if (index <= 5) {
-          targetList.push(game);
+          targetList.push(targetObj);
         }
       }
       setDisplayedList([...targetList]);
     }
-  }, [data]);
+  }, [gameData]);
 
   useEffect(() => {
     if (isOpen) {
-      let targetList: Game[] = [];
-      for (const game of data.games) {
-        targetList.push(game);
+      let targetList: {
+        user: Pick<User, "id" | "user_name" | "img_path">;
+        game: Game;
+      }[] = [];
+      let targetObj: {
+        user: Pick<User, "id" | "user_name" | "img_path">;
+        game: Game;
+      };
+      for (const game of gameData.games) {
+        for (const user of userData.users) {
+          if (user.id === game.user_id) {
+            targetObj = {
+              user: {
+                id: user.id,
+                user_name: user.username,
+                img_path: user.img_path,
+              },
+              game: game,
+            };
+          }
+        }
+        targetList.push(targetObj);
       }
       setDisplayedList([...targetList]);
-    } else if (!isOpen && data) {
-      let targetList: Game[] = [];
+    } else if (!isOpen && gameData) {
+      let targetList: {
+        user: Pick<User, "id" | "user_name" | "img_path">;
+        game: Game;
+      }[] = [];
+      let targetObj: {
+        user: Pick<User, "id" | "user_name" | "img_path">;
+        game: Game;
+      };
       let index = 0;
-      for (const game of data.games) {
+      for (const game of gameData.games) {
         index++;
+        for (const user of userData.users) {
+          if (user.id === game.user_id) {
+            targetObj = {
+              user: {
+                id: user.id,
+                user_name: user.username,
+                img_path: user.img_path,
+              },
+              game: game,
+            };
+          }
+        }
         if (index <= 5) {
-          targetList.push(game);
+          targetList.push(targetObj);
         }
       }
       setDisplayedList([...targetList]);
@@ -47,10 +119,10 @@ const LankingArea = () => {
     <>
       <div className="mt-7">
         <h3 className="text-center font-bold text-md">世界ランキング</h3>
-        {loading && "ローディング中..."}
-        {data &&
-          displayedList.map((game, index) => (
-            <LankingCard key={index} lank={index} game={game} />
+        {gameLoading && "ローディング中..."}
+        {gameData &&
+          displayedList.map((oneGameData, index) => (
+            <LankingCard key={index} lank={index} gameData={oneGameData} />
           ))}
         <div className="flex flex-col md:flex-row items-center justify-center mb-10">
           <button
