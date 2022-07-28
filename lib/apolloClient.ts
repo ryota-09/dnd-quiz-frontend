@@ -4,12 +4,13 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
   from,
+  fromPromise,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import fetch from "cross-fetch";
 import Cookies from "universal-cookie";
-import { useUpdateToken } from "../hooks/useRefreshToken";
+import { updateToken } from "../hooks/useRefreshToken";
 
 const cookie = new Cookies();
 
@@ -41,17 +42,25 @@ const errorLink = onError(
           // when an AuthenticationError is thrown in a resolver
           case "UNAUTHENTICATED":
             // Modify the operation context with a new token
+            // 期限が切れたトークンの場合。
+            if (err.message === "Malformed Authorization header") {
+              updateToken()
+                .then((res) => {
+                  refreshToken = cookie.get("refresh_token");
+                  cookie.set("access_token", res.newAccessToken);
+                  return forward(operation);
+                })
+                .catch((error) => {
+                  console.log(error);
+                  return;
+                });
+            }
             const oldHeaders = operation.getContext().headers;
             operation.setContext({
               headers: {
                 ...oldHeaders,
                 authorization: `Bearer ${refreshToken}`,
               },
-            });
-            // refreshトークンをアップデートするときに用いる。
-            //ここでエラーが起こっている/////////////////////////////////
-            useUpdateToken(refreshToken).then((res) => {
-              refreshToken = res;
             });
             // Retry the request, returning the new observable
             return forward(operation);

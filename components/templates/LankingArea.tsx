@@ -26,7 +26,7 @@ const LankingArea = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (gameData) {
+    if (gameData && userData) {
       let targetList: {
         user: Pick<User, "id" | "user_name" | "img_path">;
         game: Game;
@@ -56,7 +56,7 @@ const LankingArea = () => {
       }
       setDisplayedList([...targetList]);
     }
-  }, [gameData]);
+  }, [gameData, userData]);
 
   useEffect(() => {
     if (isOpen) {
