@@ -12,13 +12,18 @@ const DoraggableArea: FC<Props> = memo(({ index, text }) => {
   return (
     <>
       <Draggable index={index} draggableId={text.id}>
-        {(provided) => (
+        {(provided, snapshot) => (
           <div
             key={text.id}
             className="border bg-green-300 px-10 py-10 text-7xl rounded-md"
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
+            style={{
+              ...provided.draggableProps.style,
+              // ドラッグ中のCSSの変更はここ。
+              opacity: snapshot.isDragging ? "0.7" : "1",
+            }}
           >
             <p>{text.singleText}</p>
           </div>

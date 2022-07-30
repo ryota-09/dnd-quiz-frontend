@@ -3,9 +3,10 @@ import { useQuery, useReactiveVar } from "@apollo/client";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import type { DropResult } from "react-beautiful-dnd";
 import { ReactNode, useEffect, useState } from "react";
-import { v4 as uuid } from "uuid";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import { v4 as uuid } from "uuid";
+import { clsx } from "clsx";
 
 import { GetWordListQuery } from "../types/generated/graphql";
 import { GET_WORDLIST } from "../queries/queries";
@@ -222,7 +223,12 @@ const Quiz: NextPage = () => {
   return (
     <NoSSR>
       <Layout title="Home">
-        <div className="flex justify-center items-center flex-col min-h-screen">
+        <div
+          className={clsx(
+            "flex flex-col min-h-screen",
+            simpleCount > 0 && "justify-center"
+          )}
+        >
           {simpleTimer ? (
             <CountSimpleTimer
               simpleCount={simpleCount}
@@ -231,6 +237,9 @@ const Quiz: NextPage = () => {
             />
           ) : (
             <>
+              <h2 className="text-gray-800 text-2xl lg:text-3xl font-bold text-center mb-4 md:mb-6">
+                \ Playing Quiz Now ! /
+              </h2>
               <CountUpTimer
                 totalCount={totalCount}
                 setTotalCount={setTotalCount}

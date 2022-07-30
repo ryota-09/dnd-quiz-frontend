@@ -62,7 +62,7 @@ const MyPage: NextPage = () => {
               My Page
             </h2>
           </div>
-          {loading ? (
+          {loading && !data ? (
             <p>ローディング中...</p>
           ) : (
             <div>

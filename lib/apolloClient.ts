@@ -46,7 +46,7 @@ const errorLink = onError(
             if (err.message === "Malformed Authorization header") {
               updateToken()
                 .then((res) => {
-                  refreshToken = cookie.get("refresh_token");
+                  cookie.set("refresh_token", res.newRefreshToken);
                   cookie.set("access_token", res.newAccessToken);
                   return forward(operation);
                 })

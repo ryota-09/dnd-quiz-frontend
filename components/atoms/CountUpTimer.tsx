@@ -1,6 +1,8 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Dispatch, FC, memo, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, FC, memo, SetStateAction, useEffect } from "react";
+import { clsx } from "clsx"
+
 
 type Props = {
   totalCount: number;
@@ -23,8 +25,8 @@ const CountUpTimer: FC<Props> = memo(
 
     return (
       <div>
-        <p>Total Time: </p>
-        <div>{totalCount} s</div>
+        <p className="text-grey-500 text-xl text-center">Total Time: </p>
+        <div className="text-2xl font-bold text-center text-black-800 text-7xl font-bold">{totalCount} s</div>
       </div>
     );
   }

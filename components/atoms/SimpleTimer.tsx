@@ -21,7 +21,11 @@ const CountSimpleTimer: FC<Props> = memo(
       }
     }, [simpleTimer]);
 
-    return <div className="text-black-800 text-9xl md:text-9xl font-bold">{simpleCount}</div>;
+    return (
+      <div className="text-black-800 text-9xl md:text-9xl font-bold">
+        {simpleCount}
+      </div>
+    );
   }
 );
 export default CountSimpleTimer;

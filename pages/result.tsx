@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
 
 import Layout from "../components/organisms/Layout";
 import ResultRadarChart from "../components/organisms/ResultRadarChart";
@@ -10,6 +11,9 @@ import { gameStateVar, setGameState } from "../cache";
 import { GameState } from "../types/types";
 import { CreateGameMutation } from "../types/generated/graphql";
 import { CREATE_GAME } from "../queries/queries";
+
+
+const cookie = new Cookies();
 
 const Result: NextPage = () => {
   const { resultWordList, makeDisplayList } = useDisplayList();
@@ -82,7 +86,7 @@ const Result: NextPage = () => {
     makeDisplayList(currentGameState.word_list, currentGameState.correct_list);
     let resultGameState = {
       id: currentGameState.id,
-      user_id: "81b25a8f-2458-4df8-a1a9-4de2bcd105bf",
+      user_id: cookie.get("user_id"),
       trial_time: currentGameState.trial_time,
       correct_count: currentGameState.correct_count,
       vocabulary_point: currentGameState.vocabulary_point,

@@ -42,10 +42,11 @@ const Layout: FC<TubTitle> = ({ title, children }) => {
   //     navigate('/auth');
   //   }
   // };
-  const [logout, { client }] =
-    useMutation<LogoutMutation /* {logout: boolean }*/>(LOGOUT_USER);
+  const [logout, { client }] = useMutation<LogoutMutation>(LOGOUT_USER);
   const logoutFn = async () => {
     const frag = await logout();
+    await client.resetStore();
+    await client.clearStore();
     cookie.remove("user_id");
     cookie.remove("refresh_token");
     cookie.remove("access_token");
