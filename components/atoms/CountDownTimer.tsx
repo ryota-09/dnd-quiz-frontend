@@ -25,7 +25,7 @@ const CountDownTimer: FC<Props> = memo(
 
     return (
       <div className="mt-5">
-        <p className="text-grey-500 text-xl text-center">残り時間: </p>
+        <p className="text-grey-500 text-xl text-center">残り時間</p>
         <div className={clsx("text-2xl font-bold text-center text-black-800 text-7xl font-bold",
         downCount <= 3 && "text-red-500"
         )}>{downCount.toFixed(1)} s</div>

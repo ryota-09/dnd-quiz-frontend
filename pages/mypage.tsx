@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery, useReactiveVar } from "@apollo/client";
 import Cookies from "universal-cookie";
 import router from "next/router";
@@ -62,7 +63,7 @@ const MyPage: NextPage = () => {
               My Page
             </h2>
           </div>
-          {loading && !data ? (
+          {loading && userLoading && !data ? (
             <p>ローディング中...</p>
           ) : (
             <div>

@@ -131,7 +131,7 @@ const Quiz: NextPage = () => {
       str += text.singleText;
     }
     if (data && quiz && str === quiz.answerText) {
-      setDisplayText(" 正解 ");
+      setDisplayText("正解");
       let targetWordState = {
         isCorrect: true,
         word: currentGameState.word_list[currentGameState.current_index].word,
@@ -180,7 +180,7 @@ const Quiz: NextPage = () => {
 
   useEffect(() => {
     if (downCount <= 0) {
-      setDisplayText(" 時間切れ !");
+      setDisplayText("タイムアップ！");
       let nextIndex = currentGameState.current_index + 1;
       setNextIndex(nextIndex);
       try {
@@ -270,7 +270,46 @@ const Quiz: NextPage = () => {
                 </Droppable>
               </DragDropContext>
               <br />
-              <p className="z-50 text-red-500">{displayText}</p>
+              {displayText === "正解" && (
+                <div className="flex justify-center items-center mt-10">
+                  <span className="text-2xl font-bold text-center text-black-500 text-7xl font-bold">
+                    {displayText}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-20 w-20 text-yellow-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+              )}
+              {displayText === "タイムアップ！" && (
+                <div className="flex justify-center items-center mt-10">
+                  <span className="text-2xl font-bold text-center text-black-500 text-7xl font-bold">
+                    {displayText}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-24 w-24 text-red-500"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
             </>
           )}
         </div>

@@ -25,7 +25,7 @@ const CountUpTimer: FC<Props> = memo(
 
     return (
       <div>
-        <p className="text-grey-500 text-xl text-center">Total Time: </p>
+        <p className="text-grey-500 text-xl text-center">Total Time</p>
         <div className="text-2xl font-bold text-center text-black-800 text-7xl font-bold">{totalCount} s</div>
       </div>
     );

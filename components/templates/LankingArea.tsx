@@ -119,11 +119,11 @@ const LankingArea = () => {
     <>
       <div className="mt-7">
         <h3 className="text-center font-bold text-md">世界ランキング</h3>
-        {gameLoading && "ローディング中..."}
-        {gameData &&
-          displayedList.map((oneGameData, index) => (
-            <LankingCard key={index} lank={index} gameData={oneGameData} />
-          ))}
+        {gameLoading && gameLoading
+          ? "ローディング中..."
+          : displayedList.map((oneGameData, index) => (
+              <LankingCard key={index} lank={index} gameData={oneGameData} />
+            ))}
         <div className="flex flex-col md:flex-row items-center justify-center mb-10">
           <button
             type="button"

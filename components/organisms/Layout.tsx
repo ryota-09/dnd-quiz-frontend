@@ -68,7 +68,7 @@ const Layout: FC<TubTitle> = ({ title, children }) => {
                   aria-label="logo"
                   data-testid="home-nav"
                 >
-                  Title logo
+                  Moji Jun
                 </a>
               </Link>
               {/* <!-- logo - end --> */}
