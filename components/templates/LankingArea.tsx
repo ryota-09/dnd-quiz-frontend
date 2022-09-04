@@ -119,8 +119,8 @@ const LankingArea = () => {
     <>
       <div className="mt-7">
         <h3 className="text-center font-bold text-md">世界ランキング</h3>
-        {gameLoading && gameLoading
-          ? "ローディング中..."
+        {gameLoading && userLoading
+          ? <p className="flex justify-center mt-5">ローディング中...</p>
           : displayedList.map((oneGameData, index) => (
               <LankingCard key={index} lank={index} gameData={oneGameData} />
             ))}

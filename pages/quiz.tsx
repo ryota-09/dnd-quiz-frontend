@@ -64,6 +64,7 @@ const Quiz: NextPage = () => {
   const [downTimer, setDownTimer] = useState(false);
   const [simpleCount, setSimpleCount] = useState(3);
   const [simpleTimer, setSimpleTimer] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   if (error) {
     console.log("エラー", error.message);
@@ -148,6 +149,10 @@ const Quiz: NextPage = () => {
       );
       addBocabularyPoint(nextVocaPoint);
       let nextIndex = currentGameState.current_index + 1;
+      if (nextIndex > 4) {
+        setIsFinished(true);
+        setSimpleTimer(false);
+      }
       setNextIndex(nextIndex);
       try {
         let newQuiz = makeSingleQuiz(
@@ -160,6 +165,7 @@ const Quiz: NextPage = () => {
           setDisplayText("");
         }, 1000);
       } catch {
+        setIsFinished(true);
         let finishGameState = {
           id: currentGameState.id,
           user_id: "ユーザーid",
@@ -182,6 +188,10 @@ const Quiz: NextPage = () => {
     if (downCount <= 0) {
       setDisplayText("タイムアップ！");
       let nextIndex = currentGameState.current_index + 1;
+      if (nextIndex > 4) {
+        setIsFinished(true);
+        setSimpleTimer(false);
+      }
       setNextIndex(nextIndex);
       try {
         let newQuiz = makeSingleQuiz(
@@ -194,6 +204,7 @@ const Quiz: NextPage = () => {
           setDisplayText("");
         }, 1000);
       } catch {
+        setIsFinished(true);
         let finishGameState = {
           id: currentGameState.id,
           user_id: "ユーザーid",
@@ -236,7 +247,7 @@ const Quiz: NextPage = () => {
               simpleTimer={simpleTimer}
             />
           ) : (
-            <>
+            <div className={clsx(isFinished && "hidden")}>
               <h2 className="text-gray-800 text-2xl lg:text-3xl font-bold text-center mb-4 md:mb-6">
                 \ Playing Quiz Now ! /
               </h2>
@@ -310,7 +321,12 @@ const Quiz: NextPage = () => {
                   </svg>
                 </div>
               )}
-            </>
+            </div>
+          )}
+          {isFinished && (
+            <p className="flex justify-center items-center my-auto text-black-800 text-9xl md:text-9xl font-bold">
+              Finish!
+            </p>
           )}
         </div>
       </Layout>
